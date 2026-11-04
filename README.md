@@ -47,7 +47,27 @@ El total se divide por los kilómetros de la ruta. Si da 4 o más, la ruta es **
 > También funciona abriendo `index.html` directamente, pero "Usar mi ubicación" necesita `localhost` (Live Server) o HTTPS.
 
 ## Estructura (Modelo-Vista-Controlador)
-\
+```
+index.html                 Interfaz (HTML) y orden de carga de los scripts
+css/estilos.css            Estilos: tema oscuro, diseño para celular
+img/                       Foto de portada e íconos (Lucide)
+
+data/puntos.js             MODELO       Puntos de EJEMPLO en Fusagasugá
+data/entidades.js          MODELO       Correos de la Secretaría de la Mujer por municipio
+js/modelo/seguridad.js     MODELO       Cálculo del nivel de seguridad (el corazón de la idea)
+js/modelo/rutas.js         MODELO       Rutas a pie (FOSSGIS) + desvíos
+js/modelo/reportes.js      MODELO       Reportes de usuarias (localStorage)
+js/modelo/lugares.js       MODELO       Búsqueda de direcciones y municipio (Nominatim)
+js/modelo/sos.js           MODELO       GPS, contacto de confianza, enlace de WhatsApp
+js/modelo/secretaria.js    MODELO       Texto del reporte, correo y CSV
+
+js/vista/iconos.js         VISTA        Íconos y colores de cada tipo de punto
+js/vista/mapa.js           VISTA        Mapa Leaflet: puntos, marcadores y rutas
+js/vista/panel.js          VISTA        Panel lateral, tarjetas de rutas y ventanas
+
+js/controlador/app.js      CONTROLADOR  Estado y eventos; conecta modelo y vista
+```
+
 Regla: el **modelo** no toca la pantalla (ni DOM ni Leaflet), la **vista** no guarda estado ni llama a servidores, y el **controlador** decide qué pasa cuando la usuaria hace algo.
 
 Imágenes: íconos de [Lucide](https://lucide.dev) (ISC) y foto de portada "Bogotá city and street lights" de AltaGamba (Unsplash, CC0) vía Wikimedia Commons.

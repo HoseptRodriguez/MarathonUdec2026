@@ -29,9 +29,9 @@ Documento de traspaso para que otro agente continúe con todo el contexto.
 
 ## 4. Arquitectura: Modelo-Vista-Controlador
 Pedido explícito del equipo. Se usan scripts globales sin módulos ES, para que funcione con doble clic (file://). El orden en index.html es: Modelo, luego Vista, luego Controlador.
-- **Modelo** (, ): seguridad.js (pesos y puntaje, evaluarRutas), rutas.js (FOSSGIS + desvíos), reportes.js (localStorage), lugares.js (Nominatim: buscarLugar(texto, centro), obtenerMunicipio), sos.js (GPS, contacto, enlaceWhatsApp), secretaria.js (prepararReporteSecretaria, crearCSV). **No usa document ni Leaflet** (verificado con grep).
-- **Vista** (): iconos.js (TIPOS, htmlMarcador), mapa.js (Leaflet: dibujarPuntos, ponerMarcador, dibujarRutas, encuadrar, alTocarMapa), panel.js (instruccion, mostrarListaRutas, ventanas, descargarArchivo).
-- **Controlador** (): estado (origen, destino, rutas, modoClic, modoReporte, temporizador) y todos los eventos.
+- **Modelo** (`data/`, `js/modelo/`): seguridad.js (pesos y puntaje, evaluarRutas), rutas.js (FOSSGIS + desvíos), reportes.js (localStorage), lugares.js (Nominatim: buscarLugar(texto, centro), obtenerMunicipio), sos.js (GPS, contacto, enlaceWhatsApp), secretaria.js (prepararReporteSecretaria, crearCSV). **No usa document ni Leaflet** (verificado con grep).
+- **Vista** (`js/vista/`): iconos.js (TIPOS, htmlMarcador), mapa.js (Leaflet: dibujarPuntos, ponerMarcador, dibujarRutas, encuadrar, alTocarMapa), panel.js (instruccion, mostrarListaRutas, ventanas, descargarArchivo).
+- **Controlador** (`js/controlador/app.js`): estado (origen, destino, rutas, modoClic, modoReporte, temporizador) y todos los eventos.
 
 ## 5. Decisiones técnicas
 - Rutas: `https://routing.openstreetmap.de/routed-foot/route/v1/driving/...`, porque `router.project-osrm.org` solo calcula rutas en auto.
