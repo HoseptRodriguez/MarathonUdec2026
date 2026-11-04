@@ -1,7 +1,7 @@
 // MODELO (servidor) · Reportes de zonas inseguras.
 
 const crypto = require('node:crypto');
-const { todos, guardarRegistro, ErrorAura } = require('./almacen');
+const { todos, guardarRegistro, borrarRegistro, ErrorAura } = require('./almacen');
 
 // Texto limpio y con largo máximo
 const texto = (valor, maximo) => String(valor || '').trim().slice(0, maximo);
@@ -50,8 +50,15 @@ async function reportesDe(usuariaId) {
     .map(sinDuena);
 }
 
+// Borra todos los reportes de una usuaria (cuando elimina su cuenta)
+async function borrarReportesDe(usuariaId) {
+  for (const r of (await todos('reportes')).filter(r => r.usuariaId === usuariaId)) {
+    await borrarRegistro('reportes', r.id);
+  }
+}
+
 function sinDuena({ usuariaId, ...resto }) {
   return resto;
 }
 
-module.exports = { crearReporte, reportesPublicos, reportesDe };
+module.exports = { crearReporte, reportesPublicos, reportesDe, borrarReportesDe };

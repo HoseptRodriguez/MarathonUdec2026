@@ -76,6 +76,31 @@ test('reportes: otra usuaria los ve en el mapa pero no en su lista', async () =>
   assert.equal((await api('GET', '/api/reportes/mios', null, ana)).datos.length, 1);
 });
 
+test('eliminar cuenta: borra la cuenta, sus sesiones y sus reportes', async () => {
+  const token = (await api('POST', '/api/registro', cuenta('cata@api.co'))).datos.token;
+  await api('POST', '/api/reportes', { lat: 4.34, lng: -74.36, motivo: 'Calle muy sola' }, token);
+  const otra = (await api('POST', '/api/registro', cuenta('dani@api.co'))).datos.token;
+  const antes = (await api('GET', '/api/reportes', null, otra)).datos.length;
+
+  assert.equal((await api('DELETE', '/api/perfil', null, token)).estado, 200);
+  assert.equal((await api('GET', '/api/perfil', null, token)).estado, 401); // la sesión ya no sirve
+  assert.equal((await api('POST', '/api/sesion', { correo: 'cata@api.co', contrasena: 'claveSegura1' })).estado, 401);
+  assert.equal((await api('GET', '/api/reportes', null, otra)).datos.length, antes - 1); // su reporte desapareció
+  assert.equal((await api('POST', '/api/registro', cuenta('cata@api.co'))).estado, 200); // el correo queda libre
+});
+
+test('la política de datos se puede consultar sin iniciar sesión', async () => {
+  assert.equal(await rutaCruda('/politica.html'), 200);
+});
+
+test('las librerías (Leaflet y SheetJS) se entregan desde el proyecto, sin depender de unpkg', async () => {
+  assert.equal(await rutaCruda('/vendor/leaflet/leaflet.js'), 200);
+  assert.equal(await rutaCruda('/vendor/leaflet/leaflet.css'), 200);
+  assert.equal(await rutaCruda('/vendor/xlsx/xlsx.full.min.js'), 200);
+  const html = await (await fetch(base + '/')).text();
+  assert.ok(!html.includes('unpkg.com'), 'index.html no debe cargar nada de unpkg');
+});
+
 test('datos inválidos y rutas desconocidas', async () => {
   assert.equal((await api('POST', '/api/registro', { nombre: 'x' })).estado, 400);
   assert.equal((await api('GET', '/api/no-existe')).estado, 404);

@@ -54,7 +54,10 @@ API: `POST /api/registro`, `POST /api/sesion`, `DELETE /api/sesion`, `GET|PUT /a
 - `servidor/datos/` está en `.gitignore`: nunca se suben datos de usuarias.
 
 ## 6. Pendientes
-- Política de tratamiento de datos (Ley 1581): falta saber quién es la persona o entidad responsable.
+- Política de datos publicada en `politica.html` (responsables: Natalia Velasquez, Isabela Lombana y Hosept Rodriguez; domicilio Fusagasugá). **Falta el correo de contacto** (marcado "por definir" en la página).
+- Se agregaron `DELETE /api/perfil` (eliminar cuenta, sesiones y reportes) y el botón "Eliminar mi cuenta y mis datos".
+- **Leaflet y SheetJS se sirven desde `vendor/`**: el 2026-11-04 unpkg se cayó, la app no cargaba `L` y por eso no se podían crear cuentas.
+- El documento de uso de IA ahora está en APA 7 (`docs/USO_DE_IA.md`); se eliminó la versión IEEE.
 - Correo oficial de la Secretaría/Oficina de la Mujer de Fusagasugá en `data/entidades.js`: no se encontró uno verificado, no hay que inventarlo.
 - Verificar con el equipo las líneas 123 y 155.
 - Recuperar contraseña: no implementado (requiere envío de correos).

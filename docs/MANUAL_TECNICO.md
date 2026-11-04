@@ -16,7 +16,7 @@ Aura es una aplicación web para elegir rutas nocturnas a pie más seguras para 
 | Internet | Necesario: mapa, rutas, búsqueda de direcciones y librerías (CDN) |
 
 **No hay dependencias npm.** El servidor usa solo módulos de Node (`http`, `fs`, `crypto`).
-Librerías del navegador cargadas por CDN: Leaflet 1.9.4 (Agafonkin, 2023) y SheetJS 0.18.5 (SheetJS LLC, s. f.).
+Librerías del navegador incluidas en el proyecto (carpeta `vendor/`, para no depender de servidores externos): Leaflet 1.9.4 (Agafonkin, 2023) y SheetJS 0.18.5 (SheetJS LLC, s. f.).
 
 ---
 
@@ -154,6 +154,7 @@ Todas las rutas responden JSON. Excepto `salud`, `registro` y `sesion`, todas ex
 | `DELETE /api/sesion` | — | `{ ok: true }` |
 | `GET /api/perfil` | — | `{ id, nombre, correo, contacto }` |
 | `PUT /api/perfil` | `{ contacto }` | perfil actualizado |
+| `DELETE /api/perfil` | — | borra la cuenta, sus sesiones y sus reportes (derecho de supresión) |
 | `GET /api/reportes` | — | reportes de todas, **sin dueña ni descripción** |
 | `GET /api/reportes/mios` | — | reportes completos de la usuaria |
 | `POST /api/reportes` | `{ lat, lng, motivo, descripcion, municipio, departamento }` | reporte creado |
@@ -220,7 +221,7 @@ Usa el ejecutor nativo `node:test`, sin dependencias. Cada prueba usa una base d
 | `pruebas/servidor-reportes.test.js` | Validaciones, privacidad de reportes públicos, reportes por usuaria |
 | `pruebas/api.test.js` | API completa por HTTP y protección de archivos |
 
-Resultado al 2026-11-04: **39 pruebas, 39 aprobadas**.
+Resultado al 2026-11-04: **47 pruebas, 47 aprobadas** (incluye Upstash Redis simulado, eliminación de cuenta y librerías locales).
 
 ---
 
@@ -276,7 +277,7 @@ Para respaldar la base de datos, usa el panel de Upstash en Vercel (Storage → 
 - El plan gratuito de Upstash tiene límites de comandos y de tamaño. Con muchas usuarias habrá que subir de plan.
 - Los servicios públicos de OpenStreetMap (teselas, Nominatim y FOSSGIS) tienen políticas de uso justo (OpenStreetMap Foundation, s. f.). Con mucho tráfico se necesita un servidor propio o un proveedor.
 - Falta el correo oficial de la Secretaría de la Mujer de Fusagasugá en `data/entidades.js`.
-- Falta publicar la política de tratamiento de datos que exige la Ley 1581 de 2012 (Congreso de la República de Colombia, 2012).
+- La política de tratamiento de datos (Congreso de la República de Colombia, 2012) está en `politica.html`, con Natalia Velasquez, Isabela Lombana y Hosept Rodriguez como responsables. Falta definir el correo de contacto.
 
 ## Nota sobre el uso de inteligencia artificial
 

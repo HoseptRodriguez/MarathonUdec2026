@@ -263,11 +263,31 @@ $('formCrear').onsubmit = async e => {
   }
 };
 
-$('btnSalir').onclick = async () => {
-  await salir();
+// Vuelve a la pantalla de inicio de sesión
+function volverAlInicio() {
   empezarDeNuevo();
   mostrarPestana('entrar');
   mostrarPantallaSesion(true);
+}
+
+$('btnSalir').onclick = async () => {
+  await salir();
+  volverAlInicio();
+};
+
+// Eliminar la cuenta (con confirmación)
+$('btnEliminarCuenta').onclick = () => $('dialogoEliminar').showModal();
+$('btnCancelarEliminar').onclick = () => $('dialogoEliminar').close();
+$('btnConfirmarEliminar').onclick = async () => {
+  $('dialogoEliminar').close();
+  try {
+    await eliminarMiCuenta();
+    await actualizarReportes().catch(() => {});
+    volverAlInicio();
+    mostrarErrorSesion('Tu cuenta y tus datos fueron eliminados.');
+  } catch (error) {
+    instruccion(`No se pudo eliminar la cuenta: ${error.message}`);
+  }
 };
 
 // Con la sesión iniciada: carga los reportes de todas y arranca la app

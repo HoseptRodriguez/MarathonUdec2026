@@ -13,7 +13,7 @@ const PUERTO = Number(process.env.PORT) || 3000;
 const RAIZ = path.join(__dirname, '..');
 
 // Carpetas de la app que se pueden descargar (nunca servidor/ ni .git)
-const PUBLICAS = ['index.html', 'manifest.webmanifest', 'css/', 'js/', 'img/', 'data/'];
+const PUBLICAS = ['index.html', 'politica.html', 'manifest.webmanifest', 'css/', 'js/', 'img/', 'data/', 'vendor/'];
 
 const TIPOS = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',
@@ -45,6 +45,13 @@ const API = {
   },
   'GET /api/perfil': ({ usuaria }) => requiereSesion(usuaria),
   'PUT /api/perfil': ({ usuaria, cuerpo }) => usuarias.actualizarContacto(requiereSesion(usuaria).id, cuerpo.contacto),
+  // Elimina la cuenta, sus sesiones y sus reportes (derecho de supresión, Ley 1581 de 2012)
+  'DELETE /api/perfil': async ({ usuaria }) => {
+    const { id } = requiereSesion(usuaria);
+    await reportes.borrarReportesDe(id);
+    await usuarias.eliminarCuenta(id);
+    return { ok: true };
+  },
   'GET /api/reportes': ({ usuaria }) => (requiereSesion(usuaria), reportes.reportesPublicos()),
   'GET /api/reportes/mios': ({ usuaria }) => reportes.reportesDe(requiereSesion(usuaria).id),
   'POST /api/reportes': ({ usuaria, cuerpo }) => reportes.crearReporte(requiereSesion(usuaria).id, cuerpo),

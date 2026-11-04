@@ -100,4 +100,12 @@ async function cerrarSesion(token) {
   if (token) await borrarRegistro('sesiones', huella(token));
 }
 
-module.exports = { registrar, verificar, actualizarContacto, crearSesion, usuariaDeToken, cerrarSesion };
+// Derecho de supresión (Ley 1581): borra la cuenta y todas sus sesiones
+async function eliminarCuenta(id) {
+  for (const s of (await todos('sesiones')).filter(s => s.usuariaId === id)) {
+    await borrarRegistro('sesiones', s.huella);
+  }
+  await borrarRegistro('usuarias', id);
+}
+
+module.exports = { registrar, verificar, actualizarContacto, crearSesion, usuariaDeToken, cerrarSesion, eliminarCuenta };

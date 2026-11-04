@@ -34,6 +34,13 @@ async function salir() {
   usuariaActual = null;
 }
 
+// Borra la cuenta, sus sesiones y sus reportes (derecho de supresión, Ley 1581)
+async function eliminarMiCuenta() {
+  await llamarApi('DELETE', '/api/perfil');
+  guardarToken('');
+  usuariaActual = null;
+}
+
 // El contacto de confianza vive en la cuenta (sirve desde cualquier dispositivo)
 function cargarContacto() {
   return usuariaActual ? usuariaActual.contacto : '';

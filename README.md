@@ -49,7 +49,7 @@ Con Live Share, quien comparte la sesión ejecuta `npm start` y comparte el puer
 ## Documentación
 - [Manual de usuaria](docs/MANUAL_USUARIA.md)
 - [Manual técnico](docs/MANUAL_TECNICO.md): instalación, arquitectura, base de datos, API, seguridad, pruebas y despliegue.
-- [Uso de IA (formato IEEE)](docs/USO_DE_IA_IEEE.md)
+- [Uso de IA (APA 7)](docs/USO_DE_IA.md)
 
 ## Cuentas y reportes
 - Cada mujer tiene su **cuenta**. La contraseña se guarda cifrada (scrypt) y la sesión dura 30 días en el dispositivo.

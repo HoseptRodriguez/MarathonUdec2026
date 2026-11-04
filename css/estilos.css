@@ -91,6 +91,9 @@ button.pequeno { padding: 6px 10px; font-size: .85rem; margin-left: auto; }
 .tarjeta-sesion form { margin-top: 12px; }
 .tarjeta-sesion form .principal { width: 100%; margin-top: 8px; }
 .error { color: #fca5a5; min-height: 1.2em; }
+button.peligro { background: #7f1d1d; }
+button.peligro:hover { background: #991b1b; }
+a { color: #c4b5fd; }
 .fila > input { flex: 1; }
 label { display: block; margin-bottom: 6px; }
 h2 { font-size: 1rem; margin: 0 0 8px; }

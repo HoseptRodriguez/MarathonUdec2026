@@ -20,7 +20,8 @@
   <meta property="og:url" content="https://aura-mujeres.vercel.app/">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_CO">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <!-- Librerías guardadas en el proyecto (vendor/) para no depender de servidores externos -->
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
@@ -37,23 +38,27 @@
         <button id="pestanaCrear" type="button">Crear cuenta</button>
       </div>
 
-      <form id="formEntrar">
+      <!-- novalidate: los errores se muestran en rojo con nuestro mensaje, no con avisos del navegador -->
+      <form id="formEntrar" novalidate>
         <label>Correo <input id="entrarCorreo" type="email" autocomplete="email" required></label>
         <label>Contraseña <input id="entrarContrasena" type="password" autocomplete="current-password" required></label>
         <button class="principal">Entrar</button>
       </form>
 
-      <form id="formCrear" hidden>
+      <form id="formCrear" hidden novalidate>
         <label>Nombre <input id="crearNombre" autocomplete="given-name" required></label>
         <label>Correo <input id="crearCorreo" type="email" autocomplete="email" required></label>
         <label>Contraseña (mínimo 8 caracteres)
           <input id="crearContrasena" type="password" minlength="8" autocomplete="new-password" required></label>
         <label class="fila"><input id="crearAutoriza" type="checkbox" required>
-          Autorizo el tratamiento de mis datos personales según la Ley 1581 de 2012. Mis reportes se muestran en el mapa sin mi nombre.</label>
+          <span>Autorizo el tratamiento de mis datos personales según la
+          <a href="politica.html" target="_blank">Política de tratamiento de datos</a> (Ley 1581 de 2012).
+          Mis reportes se muestran en el mapa sin mi nombre.</span></label>
         <button class="principal">Crear cuenta</button>
       </form>
 
       <p id="errorSesion" class="error"></p>
+      <p class="nota"><a href="politica.html" target="_blank">Política de tratamiento de datos personales</a></p>
     </div>
   </section>
 
@@ -130,6 +135,12 @@
       <p class="nota">Los puntos del mapa son datos de ejemplo.</p>
     </details>
 
+    <section class="caja">
+      <h2>Mis datos</h2>
+      <p class="nota"><a href="politica.html" target="_blank">Política de tratamiento de datos personales</a></p>
+      <button id="btnEliminarCuenta" class="peligro">Eliminar mi cuenta y mis datos</button>
+    </section>
+
     <p class="nota creditos">Foto: AltaGamba (Unsplash), CC0, vía Wikimedia Commons. Íconos: Lucide (ISC). Mapa: © OpenStreetMap.</p>
   </aside>
 
@@ -165,6 +176,14 @@
     </div>
   </dialog>
 
+  <!-- Confirmación para eliminar la cuenta -->
+  <dialog id="dialogoEliminar">
+    <h2>¿Eliminar tu cuenta?</h2>
+    <p>Se borrarán para siempre tu cuenta, tu contacto de confianza y todos tus reportes. Esta acción no se puede deshacer.</p>
+    <button id="btnConfirmarEliminar" class="peligro">Sí, eliminar todo</button>
+    <button id="btnCancelarEliminar">Cancelar</button>
+  </dialog>
+
   <!-- Ventana del reporte para la Secretaría de la Mujer -->
   <dialog id="dialogoSecretaria">
     <h2>Reporte para la Secretaría de la Mujer</h2>
@@ -176,9 +195,9 @@
     <button id="btnCerrarSecretaria">Cerrar</button>
   </dialog>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="vendor/leaflet/leaflet.js"></script>
   <!-- SheetJS: genera el archivo de Excel (.xlsx) de los reportes -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="vendor/xlsx/xlsx.full.min.js"></script>
 
   <!-- MODELO: datos y lógica (no toca la pantalla) -->
   <script src="data/puntos.js"></script>

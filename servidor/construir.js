@@ -6,7 +6,7 @@ const path = require('node:path');
 
 const RAIZ = path.join(__dirname, '..');
 const DESTINO = path.join(RAIZ, 'publico');
-const PUBLICAS = ['index.html', 'manifest.webmanifest', 'css', 'js', 'img', 'data'];
+const PUBLICAS = ['index.html', 'politica.html', 'manifest.webmanifest', 'css', 'js', 'img', 'data', 'vendor'];
 
 fs.rmSync(DESTINO, { recursive: true, force: true });
 for (const nombre of PUBLICAS) {
