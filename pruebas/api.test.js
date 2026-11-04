@@ -11,6 +11,20 @@ const { crearServidor } = require('../servidor/servidor');
 let servidor;
 let base;
 
+// OpenStreetMap simulado: el servidor de Aura no sale a internet durante las pruebas
+const fetchReal = globalThis.fetch;
+const pedidosExternos = [];
+globalThis.fetch = async (url, opciones) => {
+  if (String(url).startsWith(base)) return fetchReal(url, opciones);
+  pedidosExternos.push({ url: String(url), agente: opciones?.headers?.['User-Agent'] });
+  if (String(url).includes('tile.openstreetmap.org')) {
+    return { ok: true, arrayBuffer: async () => new Uint8Array([0x89, 0x50, 0x4e, 0x47]).buffer };
+  }
+  if (String(url).includes('/search?')) return { ok: true, json: async () => [{ lat: '4.336', lon: '-74.371', display_name: 'Universidad de Cundinamarca, Fusagasugá' }] };
+  if (String(url).includes('/reverse?')) return { ok: true, json: async () => ({ address: { town: 'Fusagasugá', state: 'Cundinamarca' } }) };
+  return { ok: true, json: async () => ({ code: 'Ok', routes: [] }) };
+};
+
 test.before(async () => {
   servidor = crearServidor();
   await new Promise(listo => servidor.listen(0, listo)); // 0 = cualquier puerto libre
@@ -99,6 +113,32 @@ test('las librerías (Leaflet y SheetJS) se entregan desde el proyecto, sin depe
   assert.equal(await rutaCruda('/vendor/xlsx/xlsx.full.min.js'), 200);
   const html = await (await fetch(base + '/')).text();
   assert.ok(!html.includes('unpkg.com'), 'index.html no debe cargar nada de unpkg');
+});
+
+test('mapas: búsqueda, municipio y rutas pasan por Aura y exigen sesión', async () => {
+  assert.equal((await api('GET', '/api/lugares?q=Universidad')).estado, 401);
+  const token = (await api('POST', '/api/registro', cuenta('mapas@api.co'))).datos.token;
+
+  const lugares = await api('GET', '/api/lugares?q=Universidad%20de%20Cundinamarca&lat=4.34&lng=-74.36', null, token);
+  assert.equal(lugares.datos[0].lat, '4.336');
+  const busqueda = pedidosExternos.find(p => p.url.includes('/search?'));
+  assert.match(busqueda.url, /countrycodes=co/);
+  assert.match(busqueda.url, /viewbox=/);
+  assert.match(busqueda.agente, /Aura/); // OpenStreetMap exige identificarse
+
+  assert.equal((await api('GET', '/api/municipio?lat=4.34&lng=-74.36', null, token)).datos.address.town, 'Fusagasugá');
+  assert.equal((await api('GET', '/api/rutas?puntos=-74.36,4.34;-74.37,4.336', null, token)).datos.code, 'Ok');
+  assert.equal((await api('GET', '/api/rutas?puntos=hola', null, token)).estado, 400);
+  assert.equal((await api('GET', '/api/lugares?q=', null, token)).estado, 400);
+});
+
+test('mapas: las teselas se entregan como imagen con caché', async () => {
+  const r = await fetch(`${base}/api/teselas/16/19229/31977`);
+  assert.equal(r.status, 200);
+  assert.equal(r.headers.get('content-type'), 'image/png');
+  assert.match(r.headers.get('cache-control'), /s-maxage=/);
+  assert.equal((await fetch(`${base}/api/teselas/25/1/1`)).status, 404); // zoom imposible
+  assert.equal((await fetch(`${base}/api/teselas/abc`)).status, 404);
 });
 
 test('datos inválidos y rutas desconocidas', async () => {

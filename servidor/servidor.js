@@ -21,6 +21,41 @@ const TIPOS = {
   '.webmanifest': 'application/manifest+json',
 };
 
+// --- Servicios de mapas: Aura los pide desde el servidor y se los entrega al navegador ---
+// Así funcionan aunque la red de la usuaria bloquee OpenStreetMap (filtros de universidades, antivirus, etc.)
+const NOMINATIM = 'https://nominatim.openstreetmap.org/';
+const RUTAS = 'https://routing.openstreetmap.de/routed-foot/route/v1/driving/';
+const TESELAS = 'https://tile.openstreetmap.org/';
+const IDENTIFICACION = { 'User-Agent': 'Aura/1.0 (+https://aura-mujeres.vercel.app)' }; // lo exige OpenStreetMap
+
+async function pedirServicio(url) {
+  let respuesta;
+  try {
+    respuesta = await fetch(url, { headers: IDENTIFICACION });
+  } catch {
+    throw new ErrorAura('El servicio de mapas no respondió. Intenta de nuevo.', 502);
+  }
+  if (!respuesta.ok) throw new ErrorAura('El servicio de mapas no respondió. Intenta de nuevo.', 502);
+  return respuesta;
+}
+
+// Imagen (tesela) del mapa: /api/teselas/<zoom>/<x>/<y>
+async function servirTesela(respuesta, ruta) {
+  const partes = ruta.match(/^\/api\/teselas\/(\d{1,2})\/(\d{1,7})\/(\d{1,7})$/);
+  if (!partes || Number(partes[1]) > 19) return responderJSON(respuesta, 404, { error: 'Tesela no válida.' });
+  try {
+    const imagen = await pedirServicio(`${TESELAS}${partes[1]}/${partes[2]}/${partes[3]}.png`);
+    respuesta.writeHead(200, {
+      'Content-Type': 'image/png',
+      // Se guarda en caché un día en el navegador y 30 días en Vercel, para no sobrecargar OpenStreetMap
+      'Cache-Control': 'public, max-age=86400, s-maxage=2592000',
+    });
+    respuesta.end(Buffer.from(await imagen.arrayBuffer()));
+  } catch (error) {
+    responderJSON(respuesta, error.estado || 502, { error: error.message });
+  }
+}
+
 // Exige que haya una usuaria con sesión iniciada
 function requiereSesion(usuaria) {
   if (!usuaria) throw new ErrorAura('Inicia sesión para continuar.', 401);
@@ -52,6 +87,36 @@ const API = {
     await usuarias.eliminarCuenta(id);
     return { ok: true };
   },
+  // Buscar una dirección o lugar en Colombia, con prioridad cerca de lat/lng
+  'GET /api/lugares': async ({ usuaria, consulta }) => {
+    requiereSesion(usuaria);
+    const texto = (consulta.get('q') || '').trim().slice(0, 200);
+    if (!texto) throw new ErrorAura('Escribe el lugar que buscas.');
+    const lat = Number(consulta.get('lat'));
+    const lng = Number(consulta.get('lng'));
+    const zona = consulta.has('lat') && Number.isFinite(lat) && Number.isFinite(lng)
+      ? `&viewbox=${lng - 0.3},${lat + 0.3},${lng + 0.3},${lat - 0.3}` : '';
+    const url = `${NOMINATIM}search?format=json&limit=1&countrycodes=co&accept-language=es${zona}&q=${encodeURIComponent(texto)}`;
+    return (await pedirServicio(url)).json();
+  },
+  // Municipio y departamento de una ubicación
+  'GET /api/municipio': async ({ usuaria, consulta }) => {
+    requiereSesion(usuaria);
+    const lat = Number(consulta.get('lat'));
+    const lng = Number(consulta.get('lng'));
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) throw new ErrorAura('Ubicación no válida.');
+    return (await pedirServicio(`${NOMINATIM}reverse?format=json&zoom=10&accept-language=es&lat=${lat}&lon=${lng}`)).json();
+  },
+  // Rutas a pie: puntos = "lng,lat;lng,lat" (2 a 4 puntos)
+  'GET /api/rutas': async ({ usuaria, consulta }) => {
+    requiereSesion(usuaria);
+    const puntos = consulta.get('puntos') || '';
+    const numero = '-?\\d{1,3}(\\.\\d+)?';
+    if (!new RegExp(`^${numero},${numero}(;${numero},${numero}){1,3}$`).test(puntos)) {
+      throw new ErrorAura('Puntos de la ruta no válidos.');
+    }
+    return (await pedirServicio(`${RUTAS}${puntos}?alternatives=3&geometries=geojson&overview=full`)).json();
+  },
   'GET /api/reportes': ({ usuaria }) => (requiereSesion(usuaria), reportes.reportesPublicos()),
   'GET /api/reportes/mios': ({ usuaria }) => reportes.reportesDe(requiereSesion(usuaria).id),
   'POST /api/reportes': ({ usuaria, cuerpo }) => reportes.crearReporte(requiereSesion(usuaria).id, cuerpo),
@@ -81,12 +146,14 @@ function responderJSON(respuesta, estado, datos) {
 }
 
 async function atenderApi(peticion, respuesta, ruta) {
+  if (peticion.method === 'GET' && ruta.startsWith('/api/teselas/')) return servirTesela(respuesta, ruta);
   const accion = API[`${peticion.method} ${ruta}`];
   if (!accion) return responderJSON(respuesta, 404, { error: 'Ruta no encontrada.' });
   try {
     const token = (peticion.headers.authorization || '').replace('Bearer ', '');
     const resultado = await accion({
       token,
+      consulta: new URL(peticion.url, 'http://localhost').searchParams,
       usuaria: await usuarias.usuariaDeToken(token),
       cuerpo: ['POST', 'PUT'].includes(peticion.method) ? await leerCuerpo(peticion) : {},
     });

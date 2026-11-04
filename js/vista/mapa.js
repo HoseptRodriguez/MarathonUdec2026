@@ -6,8 +6,8 @@ const COLORES_RUTA = { segura: '#22c55e', media: '#eab308', riesgosa: '#ef4444' 
 
 const mapa = L.map('mapa').setView(CENTRO, 16);
 
-// Mapa base de OpenStreetMap (se oscurece con CSS para uso nocturno)
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+// Mapa base de OpenStreetMap, entregado por el servidor de Aura (se oscurece con CSS para uso nocturno)
+L.tileLayer('api/teselas/{z}/{x}/{y}', {
   attribution: '&copy; OpenStreetMap',
   maxZoom: 19,
 }).addTo(mapa);

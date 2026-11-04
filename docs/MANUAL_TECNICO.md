@@ -155,6 +155,10 @@ Todas las rutas responden JSON. Excepto `salud`, `registro` y `sesion`, todas ex
 | `GET /api/perfil` | — | `{ id, nombre, correo, contacto }` |
 | `PUT /api/perfil` | `{ contacto }` | perfil actualizado |
 | `DELETE /api/perfil` | — | borra la cuenta, sus sesiones y sus reportes (derecho de supresión) |
+| `GET /api/lugares?q=&lat=&lng=` | — | búsqueda de direcciones en Colombia (Nominatim) |
+| `GET /api/municipio?lat=&lng=` | — | municipio y departamento (Nominatim) |
+| `GET /api/rutas?puntos=lng,lat;lng,lat` | — | rutas a pie (OSRM de FOSSGIS) |
+| `GET /api/teselas/{z}/{x}/{y}` | — | imagen del mapa (OpenStreetMap), con caché; no exige sesión |
 | `GET /api/reportes` | — | reportes de todas, **sin dueña ni descripción** |
 | `GET /api/reportes/mios` | — | reportes completos de la usuaria |
 | `POST /api/reportes` | `{ lat, lng, motivo, descripcion, municipio, departamento }` | reporte creado |
@@ -170,6 +174,9 @@ Códigos HTTP:
 | 500 | Error interno |
 
 ---
+
+### Servicios de mapas a través de Aura
+El navegador **nunca** llama directamente a OpenStreetMap: el mapa, la búsqueda y las rutas se piden a `/api/...` y el servidor de Aura los consulta, identificándose con un User-Agent como exige OpenStreetMap. Así Aura funciona en redes que bloquean o interceptan OpenStreetMap (el 2026-11-04 se comprobó en una red con `ERR_CERT_AUTHORITY_INVALID`). Las teselas quedan en caché en Vercel 30 días para no sobrecargar los servidores de OpenStreetMap.
 
 ## 6. Seguridad y datos personales
 
@@ -221,7 +228,7 @@ Usa el ejecutor nativo `node:test`, sin dependencias. Cada prueba usa una base d
 | `pruebas/servidor-reportes.test.js` | Validaciones, privacidad de reportes públicos, reportes por usuaria |
 | `pruebas/api.test.js` | API completa por HTTP y protección de archivos |
 
-Resultado al 2026-11-04: **47 pruebas, 47 aprobadas** (incluye Upstash Redis simulado, eliminación de cuenta y librerías locales).
+Resultado al 2026-11-04: **49 pruebas, 49 aprobadas** (incluye Upstash Redis simulado, eliminación de cuenta, librerías locales y servicios de mapas simulados).
 
 ---
 
@@ -266,6 +273,7 @@ Para respaldar la base de datos, usa el panel de Upstash en Vercel (Storage → 
 | "La base de datos de Aura no está configurada" (en Vercel) | Faltan las variables de Upstash | Revisar Storage → aura-db conectada a aura-mujeres y volver a publicar |
 | "Usar mi ubicación" no funciona | El sitio no es `localhost` ni HTTPS, o no se dio el permiso | Publicar con HTTPS y aceptar el permiso del navegador |
 | Las rutas salen punteadas ("aproximada") | No hay conexión con el servidor de rutas | Revisar internet; es un respaldo automático |
+| El mapa sale en negro, no busca lugares | La red bloquea los servicios de mapas | Ya está resuelto: Aura los entrega desde su servidor. Si pasa en local, la red bloquea también al servidor de Node; probar en la versión publicada |
 | El Excel no se descarga | No cargó SheetJS (sin internet) o no hay reportes | Revisar la conexión; hacer al menos un reporte |
 
 ---

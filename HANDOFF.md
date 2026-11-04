@@ -56,7 +56,7 @@ API: `POST /api/registro`, `POST /api/sesion`, `DELETE /api/sesion`, `GET|PUT /a
 ## 6. Pendientes
 - Política de datos publicada en `politica.html` (responsables: Natalia Velasquez, Isabela Lombana y Hosept Rodriguez; domicilio Fusagasugá). **Falta el correo de contacto** (marcado "por definir" en la página).
 - Se agregaron `DELETE /api/perfil` (eliminar cuenta, sesiones y reportes) y el botón "Eliminar mi cuenta y mis datos".
-- **Leaflet y SheetJS se sirven desde `vendor/`**: el 2026-11-04 unpkg se cayó, la app no cargaba `L` y por eso no se podían crear cuentas.
+- **Leaflet y SheetJS se sirven desde `vendor/`**, y **el mapa, la búsqueda y las rutas pasan por el servidor** (`/api/teselas`, `/api/lugares`, `/api/municipio`, `/api/rutas`). Motivo: en la red del usuario, OpenStreetMap y unpkg dan `ERR_CERT_AUTHORITY_INVALID` (TLS interceptado). Por eso no cargaba `L` ni el mapa, y no se podían crear cuentas ni buscar lugares. Antes se creyó que unpkg estaba caído; era la red.
 - El documento de uso de IA ahora está en APA 7 (`docs/USO_DE_IA.md`); se eliminó la versión IEEE.
 - Correo oficial de la Secretaría/Oficina de la Mujer de Fusagasugá en `data/entidades.js`: no se encontró uno verificado, no hay que inventarlo.
 - Verificar con el equipo las líneas 123 y 155.

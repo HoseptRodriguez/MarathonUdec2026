@@ -1,13 +1,10 @@
 // MODELO · Rutas a pie entre dos puntos.
+// Las calcula OSRM de FOSSGIS (OpenStreetMap); se piden a través del servidor de Aura.
 
-// Servidor público de rutas a pie (OSRM de FOSSGIS sobre OpenStreetMap)
-const URL_RUTAS = 'https://routing.openstreetmap.de/routed-foot/route/v1/driving/';
-
-// Pide al servidor las rutas que pasan por la lista de puntos ([lat, lng])
+// Pide las rutas que pasan por la lista de puntos ([lat, lng])
 async function pedirRutas(puntos) {
-  const texto = puntos.map(p => `${p[1]},${p[0]}`).join(';');
-  const respuesta = await fetch(`${URL_RUTAS}${texto}?alternatives=3&geometries=geojson&overview=full`);
-  const datos = await respuesta.json();
+  const texto = puntos.map(p => `${p[1].toFixed(6)},${p[0].toFixed(6)}`).join(';');
+  const datos = await llamarApi('GET', `/api/rutas?puntos=${texto}`);
   if (datos.code !== 'Ok') throw new Error(datos.code);
 
   return datos.routes.map(r => ({

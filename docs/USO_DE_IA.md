@@ -2,7 +2,7 @@
 
 ## Resumen
 
-Este documento describe el desarrollo de Aura, una aplicación web que recomienda rutas peatonales nocturnas más seguras para mujeres en Fusagasugá y el resto de Colombia. Aura permite reportar zonas inseguras, enviar esos reportes a la Secretaría de la Mujer del municipio y pedir ayuda mediante un botón SOS. Se declara de forma explícita el uso de inteligencia artificial (IA) generativa: el código, las pruebas y la documentación se produjeron con el asistente de programación Claude Code (Anthropic, 2026), a partir de instrucciones del equipo, que definió el problema, los requisitos y las decisiones, y revisó los resultados. Se detallan la metodología, la división de responsabilidades entre el equipo y la IA, los mecanismos de verificación (47 pruebas automatizadas y pruebas en navegador sobre la aplicación publicada) y las limitaciones éticas y técnicas.
+Este documento describe el desarrollo de Aura, una aplicación web que recomienda rutas peatonales nocturnas más seguras para mujeres en Fusagasugá y el resto de Colombia. Aura permite reportar zonas inseguras, enviar esos reportes a la Secretaría de la Mujer del municipio y pedir ayuda mediante un botón SOS. Se declara de forma explícita el uso de inteligencia artificial (IA) generativa: el código, las pruebas y la documentación se produjeron con el asistente de programación Claude Code (Anthropic, 2026), a partir de instrucciones del equipo, que definió el problema, los requisitos y las decisiones, y revisó los resultados. Se detallan la metodología, la división de responsabilidades entre el equipo y la IA, los mecanismos de verificación (49 pruebas automatizadas y pruebas en navegador sobre la aplicación publicada) y las limitaciones éticas y técnicas.
 
 *Palabras clave:* inteligencia artificial generativa, seguridad urbana, violencia de género, sistemas de información geográfica, desarrollo asistido por IA.
 
@@ -62,7 +62,7 @@ El desarrollo avanzó en ciclos cortos. En cada uno, el equipo dio una instrucci
 
 El código generado por IA no se aceptó sin evidencia. Se aplicaron cinco controles:
 
-1. **Pruebas automatizadas:** 47 pruebas con el ejecutor de pruebas de Node.js (OpenJS Foundation, s. f.), todas aprobadas. Cubren el cálculo de seguridad, las rutas, el reporte a la Secretaría, cuentas y sesiones, reportes, la base de datos en la nube (simulada), la API completa y la protección de archivos.
+1. **Pruebas automatizadas:** 49 pruebas con el ejecutor de pruebas de Node.js (OpenJS Foundation, s. f.), todas aprobadas. Cubren el cálculo de seguridad, las rutas, el reporte a la Secretaría, cuentas y sesiones, reportes, la base de datos en la nube (simulada), la API completa y la protección de archivos.
 2. **Pruebas en navegador sobre la aplicación publicada:** registro desde el formulario, mensajes de error, reporte, eliminación de la cuenta y política de datos. Los datos de prueba se borraron después.
 3. **Revisión visual:** capturas de pantalla en escritorio y en celular.
 4. **Verificación de fuentes:** las coordenadas reales se consultaron en OpenStreetMap. No se incluyó ningún correo institucional que no pudiera verificarse.
@@ -70,7 +70,7 @@ El código generado por IA no se aceptó sin evidencia. Se aplicaron cinco contr
    - el contacto de WhatsApp no se guardaba sin pulsar "Guardar";
    - el CSV se abría mal en Excel;
    - el puerto 3000 estaba ocupado por otro programa;
-   - la caída del servidor externo de librerías (unpkg) impedía crear cuentas. Se resolvió incluyendo las librerías en el propio proyecto.
+   - una red que bloqueaba los servicios de OpenStreetMap y unpkg impedía cargar el mapa, buscar lugares e incluso crear cuentas. Se resolvió incluyendo las librerías en el proyecto y entregando el mapa, la búsqueda y las rutas desde el servidor de Aura.
 
 ## Consideraciones Éticas y Limitaciones
 
