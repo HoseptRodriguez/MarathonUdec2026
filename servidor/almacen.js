@@ -33,6 +33,8 @@ function leerArchivo(coleccion) {
 }
 
 function escribirArchivo(coleccion, datos) {
+  // En Vercel los archivos no se conservan: sin Redis no se puede guardar nada
+  if (process.env.VERCEL) throw new ErrorAura('La base de datos de Aura no está configurada. Intenta más tarde.', 503);
   fs.mkdirSync(CARPETA, { recursive: true });
   const archivo = path.join(CARPETA, `${coleccion}.json`);
   // Primero a un archivo temporal y luego se renombra, para no dejarlo a medias
