@@ -123,14 +123,23 @@
   </dialog>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- MODELO: datos y lógica (no toca la pantalla) -->
   <script src="data/puntos.js"></script>
   <script src="data/entidades.js"></script>
-  <script src="js/seguridad.js"></script>
-  <script src="js/reportes.js"></script>
-  <script src="js/mapa.js"></script>
-  <script src="js/rutas.js"></script>
-  <script src="js/sos.js"></script>
-  <script src="js/secretaria.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/modelo/seguridad.js"></script>
+  <script src="js/modelo/rutas.js"></script>
+  <script src="js/modelo/reportes.js"></script>
+  <script src="js/modelo/lugares.js"></script>
+  <script src="js/modelo/sos.js"></script>
+  <script src="js/modelo/secretaria.js"></script>
+
+  <!-- VISTA: dibuja el mapa y el panel -->
+  <script src="js/vista/iconos.js"></script>
+  <script src="js/vista/mapa.js"></script>
+  <script src="js/vista/panel.js"></script>
+
+  <!-- CONTROLADOR: estado y eventos; conecta modelo y vista -->
+  <script src="js/controlador/app.js"></script>
 </body>
 </html>

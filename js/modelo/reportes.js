@@ -1,4 +1,4 @@
-// Reportes de zonas inseguras hechos por las usuarias.
+// MODELO · Reportes de zonas inseguras hechos por las usuarias.
 // Se guardan en el navegador (localStorage) y cuentan en el cálculo de seguridad.
 
 const CLAVE_REPORTES = 'ruta-segura-reportes';

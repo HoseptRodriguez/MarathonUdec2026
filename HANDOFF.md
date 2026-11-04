@@ -1,7 +1,7 @@
 # HANDOFF: Aura, ruta nocturna segura (Maratón IA UdeC 2026)
 
 Documento de traspaso para que otro agente continúe con todo el contexto.
-Última actualización: 2026-11-04.
+Última actualización: 2026-11-04 (refactor a MVC).
 
 ## 1. Encargo
 - Maratón con IA. Problemática: **ruta nocturna segura para mujeres en el espacio público**.
@@ -27,22 +27,11 @@ Documento de traspaso para que otro agente continúe con todo el contexto.
 9. **Demo**: el botón "Ver demo" traza rutas del Parque Principal (Plaza Mayor, 4.3439103, -74.3619659) a la Universidad de Cundinamarca (4.3359848, -74.3712360). Salen segura (2,0 km), media (2,4 km) y riesgosa (1,9 km, la más corta).
 10. **Sin emojis**: se usan íconos de **Lucide** (ISC) en `img/iconos/` y una foto de portada de Wikimedia Commons (CC0) en `img/portada.jpg`. Los créditos están al pie del panel.
 
-## 4. Archivos
-```
-index.html          Interfaz: portada, formulario Desde/Hasta, ventanas SOS/reporte/Secretaría
-css/estilos.css     Tema oscuro, marcadores de color, diseño para celular
-img/                portada.jpg + iconos/*.svg (Lucide; se ven blancos con filter: invert)
-data/puntos.js      Puntos DE EJEMPLO en Fusagasugá (ubicados sobre las rutas del demo)
-data/entidades.js   Correos de la Secretaría de la Mujer por municipio
-js/seguridad.js     Pesos, tipos e íconos; cálculo del puntaje
-js/mapa.js          Leaflet, marcadores, buscarLugar() con Nominatim
-js/rutas.js         Rutas a pie (FOSSGIS) + desvíos, dibujo y tarjetas
-js/reportes.js      Reportes en localStorage
-js/secretaria.js    Municipio, texto del reporte, mailto, CSV
-js/sos.js           GPS, SOS por WhatsApp, acompañamiento
-js/app.js           Conecta todo (estado: origen, destino, modoClic, modoReporte)
-```
-Todo es JS sin módulos (scripts globales). El orden de los `<script>` en `index.html` importa.
+## 4. Arquitectura: Modelo-Vista-Controlador
+Pedido explícito del equipo. Se usan scripts globales sin módulos ES, para que funcione con doble clic (file://). El orden en index.html es: Modelo, luego Vista, luego Controlador.
+- **Modelo** (, ): seguridad.js (pesos y puntaje, evaluarRutas), rutas.js (FOSSGIS + desvíos), reportes.js (localStorage), lugares.js (Nominatim: buscarLugar(texto, centro), obtenerMunicipio), sos.js (GPS, contacto, enlaceWhatsApp), secretaria.js (prepararReporteSecretaria, crearCSV). **No usa document ni Leaflet** (verificado con grep).
+- **Vista** (): iconos.js (TIPOS, htmlMarcador), mapa.js (Leaflet: dibujarPuntos, ponerMarcador, dibujarRutas, encuadrar, alTocarMapa), panel.js (instruccion, mostrarListaRutas, ventanas, descargarArchivo).
+- **Controlador** (): estado (origen, destino, rutas, modoClic, modoReporte, temporizador) y todos los eventos.
 
 ## 5. Decisiones técnicas
 - Rutas: `https://routing.openstreetmap.de/routed-foot/route/v1/driving/...`, porque `router.project-osrm.org` solo calcula rutas en auto.

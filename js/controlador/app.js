@@ -1,21 +1,17 @@
-// Conecta la interfaz con el mapa, las rutas y el SOS.
+// CONTROLADOR · Guarda el estado, escucha a la usuaria y conecta el Modelo con la Vista.
 
+// --- Estado de la app ---
 let origen = null;
 let destino = null;
 let rutas = [];
 let modoClic = 'origen';   // qué marca el próximo toque en el mapa: 'origen' o 'destino'
 let modoReporte = false;
 let posicionReporte = null;
+let temporizador = null;   // modo acompañamiento
 
 // Texto que se puso en "Desde" y "Hasta" (si la usuaria lo cambia, se busca de nuevo)
 let textoOrigen = '';
 let textoDestino = '';
-
-const $ = id => document.getElementById(id);
-
-function instruccion(html) {
-  $('instruccion').innerHTML = html;
-}
 
 // --- Origen y destino ---
 
@@ -36,11 +32,9 @@ function fijarDestino(pos, nombre) {
   else instruccion('Falta el <b>origen</b>: usa tu ubicación, escríbelo o tócalo en el mapa.');
 }
 
-// Marca qué botón está activo (origen o destino) para el próximo toque en el mapa
 function elegirModoClic(modo) {
   modoClic = modo;
-  $('btnClicOrigen').classList.toggle('activo', modo === 'origen');
-  $('btnClicDestino').classList.toggle('activo', modo === 'destino');
+  mostrarModoClic(modo);
 }
 
 // Origen automático con el GPS del celular
@@ -52,14 +46,12 @@ async function usarMiUbicacion() {
     elegirModoClic('origen');
     return;
   }
-  mapa.setView(pos, 16);
+  centrarEn(pos);
   fijarOrigen(pos, 'Mi ubicación');
 }
 
 // Toque en el mapa: reporte, origen o destino
-mapa.on('click', e => {
-  const pos = [e.latlng.lat, e.latlng.lng];
-
+alTocarMapa(pos => {
   if (modoReporte) {
     posicionReporte = pos;
     $('dialogoReporte').showModal();
@@ -86,12 +78,12 @@ $('formRuta').onsubmit = async e => {
     await usarMiUbicacion();
     if (!origen) return;
   } else if (desde !== textoOrigen) {
-    const lugar = await buscarLugar(desde).catch(() => null);
+    const lugar = await buscarLugar(desde, centroDelMapa()).catch(() => null);
     if (!lugar) return instruccion(`No encontramos "${desde}". Prueba con otro nombre.`);
     fijarOrigen(lugar.pos, lugar.nombre);
   }
   if (hasta !== textoDestino) {
-    const lugar = await buscarLugar(hasta).catch(() => null);
+    const lugar = await buscarLugar(hasta, centroDelMapa()).catch(() => null);
     if (!lugar) return instruccion(`No encontramos "${hasta}". Prueba con otro nombre.`);
     fijarDestino(lugar.pos, lugar.nombre);
   } else if (origen && destino) {
@@ -99,18 +91,12 @@ $('formRuta').onsubmit = async e => {
   }
 };
 
-// Pide las rutas, les pone nota de seguridad y las ordena de más a menos segura
+// Pide las rutas al modelo, las evalúa y las muestra
 async function buscarRutas() {
   instruccion('Buscando rutas…');
-  const encontradas = await obtenerRutas(origen, destino);
-  const puntos = todosLosPuntos();
-
-  rutas = encontradas
-    .map(r => ({ ...r, ...calcularSeguridad(r.coords, r.distanciaKm, puntos) }))
-    .sort((a, b) => b.puntaje - a.puntaje);
-
+  rutas = evaluarRutas(await obtenerRutas(origen, destino), todosLosPuntos());
   elegirRuta(0);
-  mapa.fitBounds(L.latLngBounds(rutas[0].coords), { padding: [40, 40] });
+  encuadrar(rutas[0].coords);
   instruccion('Te recomendamos la primera ruta. Toca otra tarjeta para compararla.');
 }
 
@@ -125,7 +111,7 @@ function empezarDeNuevo() {
   rutas = [];
   textoOrigen = textoDestino = $('desde').value = $('hasta').value = '';
   limpiarMapa();
-  $('listaRutas').innerHTML = '';
+  mostrarListaRutas([], 0, elegirRuta);
   elegirModoClic('origen');
   instruccion('Escribe desde dónde sales y a dónde vas, o márcalos en el mapa.');
 }
@@ -147,6 +133,8 @@ $('btnDemo').onclick = () => {
   fijarDestino(DEMO_DESTINO, 'Universidad de Cundinamarca');
 };
 
+// --- Reportes y Secretaría de la Mujer ---
+
 $('btnReportar').onclick = () => {
   modoReporte = !modoReporte;
   $('btnReportar').classList.toggle('activo', modoReporte);
@@ -165,21 +153,12 @@ $('btnGuardarReporte').onclick = async () => {
   });
   $('descripcionReporte').value = '';
 
-  dibujarPuntos();
-  mostrarEstadoReportes();
+  dibujarPuntos(todosLosPuntos());
+  mostrarEstadoReportes(cargarReportes().length);
   if (origen && destino) buscarRutas(); // recalcular con el nuevo reporte
-  if ($('enviarSecretaria').checked) abrirReporteSecretaria(reporte);
+  if ($('enviarSecretaria').checked) mostrarReporteSecretaria(prepararReporteSecretaria(reporte), reporte.municipio);
 };
 $('btnCancelarReporte').onclick = () => $('dialogoReporte').close();
-
-// --- Secretaría de la Mujer y descarga de reportes ---
-
-function mostrarEstadoReportes() {
-  const total = cargarReportes().length;
-  $('estadoReportes').textContent = total
-    ? `Has hecho ${total} reporte(s). Puedes descargarlos para entregarlos a la Secretaría de la Mujer.`
-    : 'Aún no has hecho reportes.';
-}
 
 $('btnCopiarReporte').onclick = async () => {
   try {
@@ -189,29 +168,34 @@ $('btnCopiarReporte').onclick = async () => {
     $('textoSecretaria').select(); // si no se puede copiar solo, queda seleccionado
   }
 };
-$('btnCerrarSecretaria').onclick = () => {
-  $('dialogoSecretaria').close();
-  $('btnCopiarReporte').lastChild.textContent = ' Copiar texto';
-};
-$('btnDescargarCSV').onclick = () => descargarCSV(cargarReportes());
+$('btnCerrarSecretaria').onclick = () => $('dialogoSecretaria').close();
+$('btnDescargarCSV').onclick = () =>
+  descargarArchivo('reportes-aura.csv', crearCSV(cargarReportes()), 'text/csv;charset=utf-8');
 
 // --- SOS y acompañamiento ---
 
-$('btnSOS').onclick = () => abrirSOS(origen || CENTRO);
+async function pedirAyuda(respaldo, motivo = 'Necesito ayuda.') {
+  abrirSOS();
+  const pos = await obtenerUbicacion(respaldo);
+  mostrarEnlaceSOS(enlaceWhatsApp(pos, motivo));
+}
+
+$('btnSOS').onclick = () => pedirAyuda(origen || CENTRO);
 $('btnCerrarSOS').onclick = () => $('dialogoSOS').close();
 
 $('btnAcompanar').onclick = () => {
   const minutos = Number($('minutos').value) || 20;
-  iniciarAcompanamiento(minutos, () => {
+  clearTimeout(temporizador);
+  temporizador = setTimeout(() => {
     $('estadoAcompanar').textContent = 'No confirmaste tu llegada.';
-    abrirSOS(destino || origen || CENTRO, 'No he confirmado que llegué a mi destino.');
-  });
+    pedirAyuda(destino || origen || CENTRO, 'No he confirmado que llegué a mi destino.');
+  }, minutos * 60 * 1000);
   $('estadoAcompanar').textContent = `En camino. Si no confirmas en ${minutos} min, se abrirá el SOS.`;
   $('btnLlegue').hidden = false;
 };
 
 $('btnLlegue').onclick = () => {
-  detenerAcompanamiento();
+  clearTimeout(temporizador);
   $('estadoAcompanar').textContent = '¡Qué bueno que llegaste bien!';
   $('btnLlegue').hidden = true;
 };
@@ -224,9 +208,7 @@ $('btnGuardarContacto').onclick = () => {
 
 // --- Inicio ---
 
-$('leyenda').innerHTML = Object.values(TIPOS)
-  .map(t => `<li class="leyenda-item">${htmlMarcador(t.icono, t.color)} ${t.texto}</li>`)
-  .join('');
-dibujarPuntos();
-mostrarEstadoReportes();
+mostrarLeyenda();
+dibujarPuntos(todosLosPuntos());
+mostrarEstadoReportes(cargarReportes().length);
 usarMiUbicacion(); // origen automático al abrir la app

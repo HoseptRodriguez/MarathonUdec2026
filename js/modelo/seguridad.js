@@ -1,23 +1,8 @@
-// Cálculo del nivel de seguridad de una ruta.
+// MODELO · Cálculo del nivel de seguridad de una ruta.
 // Idea: cada punto cercano a la ruta suma (da seguridad) o resta (es riesgoso).
 
 // Cuánto aporta cada tipo de punto
 const PESOS = { luz: 1, comercio: 2, policia: 3, violeta: 3, inseguro: -4 };
-
-// Cómo se muestra cada tipo en el mapa y la leyenda
-// (íconos de Lucide en img/iconos/)
-const TIPOS = {
-  luz:      { icono: 'lightbulb',       color: '#d97706', texto: 'Zona iluminada' },
-  comercio: { icono: 'store',           color: '#2563eb', texto: 'Comercio abierto 24 h' },
-  policia:  { icono: 'shield',          color: '#0f766e', texto: 'CAI / Policía' },
-  violeta:  { icono: 'heart-handshake', color: '#7c3aed', texto: 'Punto Violeta (apoyo a mujeres)' },
-  inseguro: { icono: 'triangle-alert',  color: '#dc2626', texto: 'Zona insegura reportada' },
-};
-
-// HTML del círculo de color con el ícono (se usa en el mapa, la leyenda y las rutas)
-function htmlMarcador(icono, color) {
-  return `<span class="marcador" style="background:${color}"><img src="img/iconos/${icono}.svg" alt=""></span>`;
-}
 
 // Un punto cuenta si está a menos de esta distancia de la ruta
 const RADIO_METROS = 60;
@@ -30,6 +15,12 @@ function aMetros(punto, referencia) {
     x: (punto[1] - referencia[1]) * rad * radioTierra * Math.cos(referencia[0] * rad),
     y: (punto[0] - referencia[0]) * rad * radioTierra,
   };
+}
+
+// Distancia en metros entre dos puntos [lat, lng]
+function distanciaMetros(a, b) {
+  const p = aMetros(b, a);
+  return Math.hypot(p.x, p.y);
 }
 
 // Distancia en metros desde un punto P al segmento de calle A-B
@@ -65,4 +56,11 @@ function calcularSeguridad(coords, distanciaKm, puntos) {
   else if (puntaje >= 1) nivel = 'media';
 
   return { puntaje, nivel, cercanos };
+}
+
+// Pone nota a cada ruta y las ordena de más a menos segura
+function evaluarRutas(rutas, puntos) {
+  return rutas
+    .map(r => ({ ...r, ...calcularSeguridad(r.coords, r.distanciaKm, puntos) }))
+    .sort((a, b) => b.puntaje - a.puntaje);
 }

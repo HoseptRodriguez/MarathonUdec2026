@@ -46,20 +46,9 @@ El total se divide por los kilómetros de la ruta. Si da 4 o más, la ruta es **
 
 > También funciona abriendo `index.html` directamente, pero "Usar mi ubicación" necesita `localhost` (Live Server) o HTTPS.
 
-## Estructura
-```
-index.html          Interfaz (panel, mapa, ventanas SOS y reporte)
-css/estilos.css     Tema oscuro, botones grandes, diseño para celular
-data/puntos.js      Puntos de EJEMPLO en Fusagasugá
-js/seguridad.js     Cálculo del nivel de seguridad (el corazón de la idea)
-js/reportes.js      Reportes de usuarias (localStorage)
-js/mapa.js          Mapa Leaflet y marcadores
-js/rutas.js         Rutas a pie (OSRM/FOSSGIS) y tarjetas de rutas
-js/sos.js           SOS, contacto de confianza, acompañamiento
-js/secretaria.js    Reporte para la Secretaría de la Mujer y descarga CSV
-data/entidades.js   Correos oficiales por municipio (POR COMPLETAR)
-js/app.js           Conecta todo
-```
+## Estructura (Modelo-Vista-Controlador)
+\
+Regla: el **modelo** no toca la pantalla (ni DOM ni Leaflet), la **vista** no guarda estado ni llama a servidores, y el **controlador** decide qué pasa cuando la usuaria hace algo.
 
 Imágenes: íconos de [Lucide](https://lucide.dev) (ISC) y foto de portada "Bogotá city and street lights" de AltaGamba (Unsplash, CC0) vía Wikimedia Commons.
 

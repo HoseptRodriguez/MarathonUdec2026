@@ -1,6 +1,8 @@
-// Mapa con Leaflet: capas, marcadores y puntos de seguridad.
+// VISTA · Mapa con Leaflet: dibuja puntos, marcadores y rutas.
 
 const CENTRO = [4.3405, -74.3693]; // Fusagasugá, cerca de la Universidad de Cundinamarca
+
+const COLORES_RUTA = { segura: '#22c55e', media: '#eab308', riesgosa: '#ef4444' };
 
 const mapa = L.map('mapa').setView(CENTRO, 16);
 
@@ -20,18 +22,15 @@ function iconoMapa(icono, color) {
   return L.divIcon({ html: htmlMarcador(icono, color), className: '', iconSize: [28, 28], iconAnchor: [14, 14] });
 }
 
-// Dibuja un punto de seguridad en el mapa
-function dibujarPunto(punto) {
-  const tipo = TIPOS[punto.tipo];
-  L.marker([punto.lat, punto.lng], { icon: iconoMapa(tipo.icono, tipo.color) })
-    .bindPopup(`<b>${tipo.texto}</b><br>${punto.nombre}`)
-    .addTo(capaPuntos);
-}
-
-// Dibuja todos los puntos (ejemplo + reportes)
-function dibujarPuntos() {
+// Dibuja los puntos de seguridad (ejemplo + reportes)
+function dibujarPuntos(puntos) {
   capaPuntos.clearLayers();
-  todosLosPuntos().forEach(dibujarPunto);
+  puntos.forEach(punto => {
+    const tipo = TIPOS[punto.tipo];
+    L.marker([punto.lat, punto.lng], { icon: iconoMapa(tipo.icono, tipo.color) })
+      .bindPopup(`<b>${tipo.texto}</b><br>${punto.nombre}`)
+      .addTo(capaPuntos);
+  });
 }
 
 // Pone (o mueve) el marcador de origen o de destino
@@ -43,16 +42,38 @@ function ponerMarcador(pos, cual) {
     .addTo(capaMarcadores);
 }
 
-// Busca una dirección o lugar en Colombia, dando prioridad a la zona que se ve en el mapa.
-// Devuelve { pos, nombre } o null.
-async function buscarLugar(texto) {
+// Dibuja las rutas; la seleccionada va más gruesa y encima de las demás
+function dibujarRutas(rutas, seleccionada) {
+  capaRutas.clearLayers();
+  rutas.forEach((ruta, i) => {
+    const elegida = i === seleccionada;
+    const linea = L.polyline(ruta.coords, {
+      color: COLORES_RUTA[ruta.nivel],
+      weight: elegida ? 8 : 4,
+      opacity: elegida ? 1 : 0.45,
+      dashArray: ruta.aproximada ? '8 8' : null,
+    }).addTo(capaRutas);
+    if (elegida) linea.bringToFront();
+  });
+}
+
+// Mueve el mapa a una posición, o para que se vea toda una ruta
+function centrarEn(pos) {
+  mapa.setView(pos, 16);
+}
+function encuadrar(coords) {
+  mapa.fitBounds(L.latLngBounds(coords), { padding: [40, 40] });
+}
+
+// Centro actual del mapa como [lat, lng]
+function centroDelMapa() {
   const c = mapa.getCenter();
-  const zona = [c.lng - 0.3, c.lat + 0.3, c.lng + 0.3, c.lat - 0.3].join(',');
-  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=co&accept-language=es&viewbox=${zona}&q=${encodeURIComponent(texto)}`;
-  const resultados = await (await fetch(url)).json();
-  if (!resultados.length) return null;
-  const lugar = resultados[0];
-  return { pos: [+lugar.lat, +lugar.lon], nombre: lugar.display_name.split(',').slice(0, 2).join(',') };
+  return [c.lat, c.lng];
+}
+
+// Avisa al controlador cuando se toca el mapa
+function alTocarMapa(funcion) {
+  mapa.on('click', e => funcion([e.latlng.lat, e.latlng.lng]));
 }
 
 // Borra rutas y marcadores
