@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ruta Nocturna Segura</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <aside id="panel">
+    <h1>🌙 Ruta Nocturna Segura</h1>
+    <p id="instruccion">Toca el mapa para marcar tu <b>origen</b>.</p>
+
+    <div class="botones">
+      <button id="btnUbicacion">📍 Usar mi ubicación como origen</button>
+      <button id="btnReportar">⚠️ Reportar zona insegura</button>
+      <button id="btnLimpiar">↺ Empezar de nuevo</button>
+    </div>
+
+    <section id="listaRutas"></section>
+
+    <section class="caja">
+      <h2>Acompañamiento</h2>
+      <label>Avisar si no llego en
+        <input id="minutos" type="number" value="20" min="1" max="180"> min
+      </label>
+      <div class="botones fila">
+        <button id="btnAcompanar">Iniciar</button>
+        <button id="btnLlegue" hidden>✅ Llegué bien</button>
+      </div>
+      <p id="estadoAcompanar"></p>
+    </section>
+
+    <section class="caja">
+      <h2>Contacto de confianza</h2>
+      <label>WhatsApp (con código de país)
+        <input id="contacto" type="tel" placeholder="56912345678">
+      </label>
+      <button id="btnGuardarContacto">Guardar</button>
+      <p id="estadoContacto"></p>
+    </section>
+
+    <details class="caja">
+      <summary>Leyenda</summary>
+      <ul id="leyenda"></ul>
+      <p class="nota">Los puntos del mapa son datos de ejemplo.</p>
+    </details>
+  </aside>
+
+  <main id="mapa"></main>
+
+  <button id="btnSOS" aria-label="Pedir ayuda">SOS</button>
+
+  <!-- Ventana de emergencia -->
+  <dialog id="dialogoSOS">
+    <h2>🚨 Pedir ayuda</h2>
+    <a id="linkWhatsApp" class="boton grande" target="_blank" rel="noopener">Enviar mi ubicación por WhatsApp</a>
+    <a class="boton" href="tel:133">📞 133 · Carabineros</a>
+    <a class="boton" href="tel:1455">📞 1455 · Orientación violencia contra la mujer</a>
+    <a class="boton" href="tel:131">📞 131 · SAMU</a>
+    <button id="btnCerrarSOS">Cerrar</button>
+  </dialog>
+
+  <!-- Ventana para reportar una zona -->
+  <dialog id="dialogoReporte">
+    <h2>⚠️ ¿Qué pasa en este lugar?</h2>
+    <select id="motivoReporte">
+      <option>Poca o nula iluminación</option>
+      <option>Acoso o hostigamiento</option>
+      <option>Sitio eriazo o abandonado</option>
+      <option>Calle muy solitaria</option>
+      <option>Otro</option>
+    </select>
+    <div class="botones fila">
+      <button id="btnGuardarReporte">Guardar reporte</button>
+      <button id="btnCancelarReporte">Cancelar</button>
+    </div>
+  </dialog>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="data/puntos.js"></script>
+  <script src="js/seguridad.js"></script>
+  <script src="js/reportes.js"></script>
+  <script src="js/mapa.js"></script>
+  <script src="js/rutas.js"></script>
+  <script src="js/sos.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

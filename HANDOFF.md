@@ -11,11 +11,18 @@ Fecha: 2026-11-04.
 > El equipo trabaja con **Live Share en VS Code**.
 > Requisitos: hacerlo **rápido**, **sin gastar muchos tokens**, que quede **perfecto** y con **código fácil de entender**.
 
-## 2. Estado actual (verificado)
+## 2. Estado actual (verificado el 2026-11-04)
 
-- El repositorio en GitHub está **vacío** (sin commits).
-- Clon local: `C:\Users\KTFUS\MarathonUdec2026` (solo contiene este `HANDOFF.md`, sin commit todavía).
-- **No se ha escrito código aún.** Todo lo de abajo es el plan propuesto.
+- **MVP implementado y en `main`.** Están hechas las funciones 1 a 7 de la sección 3, incluido el modo acompañamiento. Ver `README.md`.
+- Se probó en Chrome headless: devuelve 2 rutas reales a pie, calcula el puntaje y no da errores de JS.
+- Cambios respecto del plan:
+  - Ciudad base: **Concepción**.
+  - Los puntos están en `data/puntos.js` (no `.json`) para que funcione también abriendo el archivo sin servidor.
+  - Rutas a pie con el servidor de FOSSGIS (`routing.openstreetmap.de/routed-foot`), porque `router.project-osrm.org` solo calcula rutas en auto.
+  - Mapa base OSM oscurecido con CSS, porque CARTO ahora exige API key.
+  - Se agregó `js/app.js`, que conecta todo.
+- Se ejecuta en VS Code con la extensión Live Server, recomendada en `.vscode/extensions.json`.
+- Pendiente o mejorable: los datos de ejemplo hacen que ambas rutas del demo salgan "segura" (conviene ajustar los puntos para mostrar contraste); faltan pruebas en un celular real y verificar el SOS por WhatsApp en un teléfono.
 
 ## 3. Solución propuesta (MVP)
 
