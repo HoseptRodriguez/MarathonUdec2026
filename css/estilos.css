@@ -33,7 +33,41 @@ body {
 /* Mapa en modo oscuro: invierte los colores del mapa base, no las rutas ni los íconos */
 .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.85); }
 
-h1 { font-size: 1.4rem; margin: 0 0 8px; }
+h1 { font-size: 1.6rem; margin: 0; display: flex; align-items: center; gap: 8px; }
+
+/* Portada con foto de ciudad de noche */
+.portada {
+  margin: -16px -16px 12px;
+  padding: 60px 16px 14px;
+  background: linear-gradient(transparent, var(--panel)), url('../img/portada.jpg') center / cover;
+}
+.portada p { margin: 4px 0 0; color: var(--suave); }
+
+/* Íconos de Lucide: el SVG es negro, se invierte a blanco */
+.icono { width: 18px; height: 18px; vertical-align: -3px; filter: invert(1); }
+h1 .icono { width: 26px; height: 26px; }
+
+/* Marcadores del mapa: círculo de color con ícono */
+.marcador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+}
+.marcador img { width: 16px; height: 16px; filter: invert(1); }
+.leyenda-item { display: flex; align-items: center; gap: 8px; margin: 6px 0; list-style: none; }
+#leyenda { padding: 0; }
+.creditos { font-size: .75rem; }
+.mini { display: inline-flex; align-items: center; gap: 2px; margin: 4px 6px 0 0; }
+.mini .marcador { width: 20px; height: 20px; border-width: 1px; }
+.mini .marcador img { width: 12px; height: 12px; }
+button.principal { background: var(--violeta); font-weight: bold; }
+.fila > input { flex: 1; }
+label { display: block; margin-bottom: 6px; }
 h2 { font-size: 1rem; margin: 0 0 8px; }
 .nota { color: var(--suave); font-size: .85rem; }
 

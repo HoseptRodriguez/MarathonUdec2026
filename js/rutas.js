@@ -74,7 +74,9 @@ function mostrarListaRutas(rutas, seleccionada, alElegir) {
   rutas.forEach((ruta, i) => {
     const conteo = {};
     ruta.cercanos.forEach(p => { conteo[p.tipo] = (conteo[p.tipo] || 0) + 1; });
-    const resumen = Object.keys(conteo).map(t => `${TIPOS[t].icono}×${conteo[t]}`).join('  ') || 'Sin puntos de apoyo cerca';
+    const resumen = Object.keys(conteo)
+      .map(t => `<span class="mini" title="${TIPOS[t].texto}">${htmlMarcador(TIPOS[t].icono, TIPOS[t].color)}×${conteo[t]}</span>`)
+      .join(' ') || 'Sin puntos de apoyo cerca';
 
     const tarjeta = document.createElement('div');
     tarjeta.className = `ruta ${ruta.nivel}` + (i === seleccionada ? ' seleccionada' : '');

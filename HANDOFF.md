@@ -1,83 +1,61 @@
-# HANDOFF — Maratón IA UdeC 2026: "Ruta Nocturna Segura"
+# HANDOFF: Aura, ruta nocturna segura (Maratón IA UdeC 2026)
 
-Documento de traspaso para que otro agente continúe el trabajo con todo el contexto.
-Fecha: 2026-11-04.
+Documento de traspaso para que otro agente continúe con todo el contexto.
+Última actualización: 2026-11-04.
 
-## 1. Encargo original (del equipo)
+## 1. Encargo
+- Maratón con IA. Problemática: **ruta nocturna segura para mujeres en el espacio público**.
+- El equipo trabaja con **Live Share en VS Code**. Pide rapidez, pocos tokens, resultado pulido y **código fácil de entender**.
+- Idioma: **español de Colombia**, tanto en la interfaz como en las respuestas al equipo.
+- La app se llama **Aura** y debe servir en **toda Colombia**. La ciudad del demo es **Fusagasugá (Cundinamarca)**.
+- El equipo autorizó hacer commit y push a `main` sin preguntar.
 
-> Maratón con IA. Hay que desarrollar una solución hecha con código para la problemática:
-> **"Ruta nocturna segura para mujeres en el espacio público seguro"**.
-> Repositorio: https://github.com/HoseptRodriguez/MarathonUdec2026.git
-> El equipo trabaja con **Live Share en VS Code**.
-> Requisitos: hacerlo **rápido**, **sin gastar muchos tokens**, que quede **perfecto** y con **código fácil de entender**.
+## 2. Dónde está
+- Carpeta local: `C:\Users\KTFUS\MarathonUdec2026` (es la que se abre en VS Code).
+- Repositorio: https://github.com/HoseptRodriguez/MarathonUdec2026, rama `main`.
+- Cómo ejecutarlo: VS Code → extensión **Live Server** (recomendada en `.vscode/extensions.json`) → clic derecho en `index.html` → **Open with Live Server**. También se puede abrir `index.html` directamente, pero sin `localhost`/HTTPS no funciona el GPS.
 
-## 2. Estado actual (verificado el 2026-11-04)
+## 3. Qué hace (todo implementado y probado)
+1. **Origen automático**: al abrir, usa el GPS como origen ("Mi ubicación").
+2. **Destino por texto**: el campo "Hasta" busca direcciones y lugares en Colombia con Nominatim (`countrycodes=co`), dando prioridad a la zona visible del mapa. "Desde" también se puede editar.
+3. **Opción de pin**: los botones "Origen" y "Destino" eligen qué marca el próximo toque en el mapa.
+4. **Rutas a pie puntuadas**: Segura, Media o Riesgosa según los puntos a menos de 60 m (iluminación, comercio 24 h, CAI/Policía, Punto Violeta, zonas inseguras). El servidor de rutas casi siempre devuelve una sola, así que también se piden desvíos por cada lado.
+5. **Reportar zona insegura**: se guarda en localStorage, se dibuja y vuelve a calcular las rutas.
+6. **Reporte a la Secretaría de la Mujer**: detecta el municipio (geocodificación inversa de Nominatim), arma un texto formal y permite enviarlo por correo (`mailto`) o copiarlo. También descarga todos los reportes en CSV para Excel.
+7. **SOS**: envía la ubicación por WhatsApp al contacto de confianza y llama a la línea 123 (emergencias) o a la 155 (orientación a mujeres víctimas de violencia).
+8. **Acompañamiento**: si no se confirma la llegada en X minutos, se abre el SOS.
+9. **Demo**: el botón "Ver demo" traza rutas del Parque Principal (Plaza Mayor, 4.3439103, -74.3619659) a la Universidad de Cundinamarca (4.3359848, -74.3712360). Salen segura (2,0 km), media (2,4 km) y riesgosa (1,9 km, la más corta).
+10. **Sin emojis**: se usan íconos de **Lucide** (ISC) en `img/iconos/` y una foto de portada de Wikimedia Commons (CC0) en `img/portada.jpg`. Los créditos están al pie del panel.
 
-- **MVP implementado y en `main`.** Están hechas las funciones 1 a 7 de la sección 3, incluido el modo acompañamiento. Ver `README.md`.
-- Se probó en Chrome headless: devuelve 2 rutas reales a pie, calcula el puntaje y no da errores de JS.
-- Cambios respecto del plan:
-  - Ciudad base: **Fusagasugá (Colombia)**; antes era Concepción. Hay emergencias 123 y 155 (*verificar*), CAI de Policía y código de país 57.
-  - Botón **▶ Ver demo**: Parque Principal real (Plaza Mayor, 4.3439103, -74.3619659) → Universidad de Cundinamarca (4.3359848, -74.3712360). Los datos de ejemplo producen 3 rutas: segura (2,0 km), media (2,4 km) y riesgosa (1,9 km, la más corta). Ver el comentario en `data/puntos.js`.
-  - Probado también en vista de celular (390 px): rutas, ventana SOS y enlace de WhatsApp con el contacto y la ubicación.
-  - `js/rutas.js` agrega desvíos por cada lado, porque el servidor a menudo devuelve una sola ruta.
-  - Los puntos están en `data/puntos.js` (no `.json`) para que funcione también abriendo el archivo sin servidor.
-  - Rutas a pie con el servidor de FOSSGIS (`routing.openstreetmap.de/routed-foot`), porque `router.project-osrm.org` solo calcula rutas en auto.
-  - Mapa base OSM oscurecido con CSS, porque CARTO ahora exige API key.
-  - Se agregó `js/app.js`, que conecta todo.
-- Se ejecuta en VS Code con la extensión Live Server, recomendada en `.vscode/extensions.json`.
-- App renombrada **Aura**. Se agregaron: reporte a la Secretaría de la Mujer (`js/secretaria.js`, correo + copiar + CSV), buscador de lugares en Colombia (Nominatim `countrycodes=co`) y municipio detectado automáticamente. Probado sin errores.
-- Pendiente: completar el correo oficial en `data/entidades.js` (no se encontró uno verificado de Fusagasugá); probar en un celular físico.
-
-## 3. Solución propuesta (MVP)
-
-App web de una sola página que ayuda a una mujer a elegir la ruta más segura de noche entre dos puntos, y a pedir ayuda si la necesita.
-
-### Funciones clave
-1. **Mapa** (Leaflet + OpenStreetMap, sin API key) centrado en la ciudad (p. ej. Concepción / Chillán, Chile — *por confirmar con el equipo*).
-2. **Origen y destino**: clic en el mapa (o "usar mi ubicación").
-3. **Rutas**: pedir rutas a pie al servicio público OSRM (`https://router.project-osrm.org/route/v1/foot/...?alternatives=true&geometries=geojson`).
-4. **Puntaje de seguridad** de cada ruta, calculado con puntos de un archivo `data/puntos.json`:
-   - Suman: postes de luz / zonas iluminadas, carabineros, comercios 24 h, "puntos violeta" / refugios.
-   - Restan: reportes de zonas inseguras (poca luz, acoso, sitio eriazo).
-   - Regla simple: para cada punto a < 50 m de la ruta, sumar su peso; normalizar por longitud. Mostrar **Segura / Media / Riesgosa** con color verde / amarillo / rojo.
-5. **Reportar zona insegura**: botón → clic en el mapa → tipo de reporte → se guarda en `localStorage` y se dibuja.
-6. **Botón SOS**: comparte la ubicación actual por WhatsApp (`https://wa.me/?text=...`) a un contacto de confianza guardado, y muestra números de emergencia (Chile: 133 Carabineros, 1455 Fono Orientación Violencia contra la Mujer, 131 SAMU — *verificar*).
-7. **Modo acompañamiento** (opcional si sobra tiempo): temporizador "avísame si no llego en X min" → si no se confirma llegada, abre el SOS.
-
-### Stack (mínimo, sin build)
-- HTML + CSS + JavaScript puro. Leaflet por CDN (`https://unpkg.com/leaflet@1.9.4/dist/leaflet.js` y `.css`).
-- Se ejecuta abriendo `index.html` o con `npx serve .` / la extensión Live Server de VS Code (la geolocalización requiere `localhost` o HTTPS).
-
-### Estructura de archivos propuesta
+## 4. Archivos
 ```
-MarathonUdec2026/
-├── index.html        # Estructura: mapa, panel lateral, botones SOS/Reportar
-├── css/estilos.css   # Tema oscuro (uso nocturno), botones grandes, móvil primero
-├── js/mapa.js        # Iniciar Leaflet, marcadores de origen/destino
-├── js/rutas.js       # Llamada a OSRM y dibujo de rutas alternativas
-├── js/seguridad.js   # Cálculo del puntaje de seguridad (función pura, fácil de explicar)
-├── js/reportes.js    # Reportes de usuarias en localStorage
-├── js/sos.js         # Botón SOS, contacto de confianza, números de emergencia
-├── data/puntos.json  # Puntos de ejemplo (luz, carabineros, comercios 24 h, zonas inseguras)
-└── README.md         # Problema, solución, cómo ejecutar, capturas, equipo
+index.html          Interfaz: portada, formulario Desde/Hasta, ventanas SOS/reporte/Secretaría
+css/estilos.css     Tema oscuro, marcadores de color, diseño para celular
+img/                portada.jpg + iconos/*.svg (Lucide; se ven blancos con filter: invert)
+data/puntos.js      Puntos DE EJEMPLO en Fusagasugá (ubicados sobre las rutas del demo)
+data/entidades.js   Correos de la Secretaría de la Mujer por municipio
+js/seguridad.js     Pesos, tipos e íconos; cálculo del puntaje
+js/mapa.js          Leaflet, marcadores, buscarLugar() con Nominatim
+js/rutas.js         Rutas a pie (FOSSGIS) + desvíos, dibujo y tarjetas
+js/reportes.js      Reportes en localStorage
+js/secretaria.js    Municipio, texto del reporte, mailto, CSV
+js/sos.js           GPS, SOS por WhatsApp, acompañamiento
+js/app.js           Conecta todo (estado: origen, destino, modoClic, modoReporte)
 ```
+Todo es JS sin módulos (scripts globales). El orden de los `<script>` en `index.html` importa.
 
-### Principios de código (pedidos por el equipo)
-- Funciones cortas, nombres en español, un comentario breve por función.
-- Sin frameworks ni dependencias salvo Leaflet.
-- Diseño accesible: contraste alto, botones grandes, funciona en celular.
+## 5. Decisiones técnicas
+- Rutas: `https://routing.openstreetmap.de/routed-foot/route/v1/driving/...`, porque `router.project-osrm.org` solo calcula rutas en auto.
+- Mapa base: teselas OSM con `filter: invert(1) hue-rotate(180deg)`, porque CARTO dark exige API key.
+- Puntos en `.js` y no en `.json`, para que funcione con `file://`.
+- Ninguna API necesita clave.
 
-## 4. Próximos pasos (en orden)
-1. Confirmar ciudad base con el equipo y crear `data/puntos.json` con ~20–30 puntos de ejemplo cerca del centro.
-2. `index.html` + `css/estilos.css` + `js/mapa.js` (mapa funcionando).
-3. `js/rutas.js` (rutas OSRM con alternativas).
-4. `js/seguridad.js` (puntaje y colores) — es el corazón de la propuesta.
-5. `js/reportes.js` y `js/sos.js`.
-6. `README.md` para el jurado (problema, impacto, cómo usar, limitaciones, mejoras futuras: datos reales de luminarias municipales, reportes compartidos en backend, alertas en tiempo real).
-7. Probar en navegador (también en vista móvil) y hacer commit + push a `main`.
+## 6. Pendientes
+- **Correo oficial** de la Secretaría/Oficina de la Mujer de Fusagasugá en `data/entidades.js`: no se encontró uno verificado, así que no hay que inventarlo.
+- Verificar con el equipo las líneas 123 y 155.
+- Probar en un celular físico, en especial el GPS (requiere HTTPS o localhost) y que el SOS abra WhatsApp.
+- Un solo reporte sobre la ruta verde no le cambia el nivel; harían falta 2 o 3. Se podría subir el peso de los reportes.
+- Ideas futuras: datos reales (luminarias, CAI), backend para compartir reportes entre usuarias, ponderar por hora.
 
-## 5. Notas para el siguiente agente
-- Responder al usuario en **español**.
-- No hacer commit/push sin que el equipo lo pida (el resto del equipo edita por Live Share).
-- OSRM público puede ser lento o tener límite de uso; si falla, mostrar un mensaje claro y dibujar una línea recta como respaldo.
-- Los datos de `puntos.json` son **de ejemplo**; dejarlo dicho en el README.
+## 7. Cómo se probó
+Chrome headless con DevTools Protocol, simulando el GPS con `Emulation.setGeolocationOverride`, clics con `mapa.fire('click', ...)` y capturas de pantalla. Sin errores de JS en ninguno de los flujos: demo, destino escrito, pin, reporte con Secretaría, buscador y vista de celular de 390 px.

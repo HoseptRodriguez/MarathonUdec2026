@@ -30,7 +30,7 @@ async function abrirSOS(respaldo, motivo = 'Necesito ayuda.') {
   link.textContent = 'Obteniendo ubicación…';
 
   const [lat, lng] = await obtenerUbicacion(respaldo);
-  const mensaje = `🚨 ${motivo} Mi ubicación: https://maps.google.com/?q=${lat},${lng}`;
+  const mensaje = `AURA - ${motivo} Mi ubicación: https://maps.google.com/?q=${lat},${lng}`;
   link.href = `https://wa.me/${cargarContacto()}?text=${encodeURIComponent(mensaje)}`;
   link.textContent = 'Enviar mi ubicación por WhatsApp';
 }

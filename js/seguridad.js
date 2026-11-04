@@ -5,13 +5,19 @@
 const PESOS = { luz: 1, comercio: 2, policia: 3, violeta: 3, inseguro: -4 };
 
 // Cómo se muestra cada tipo en el mapa y la leyenda
+// (íconos de Lucide en img/iconos/)
 const TIPOS = {
-  luz:         { icono: '💡', texto: 'Zona iluminada' },
-  comercio:    { icono: '🏪', texto: 'Comercio abierto 24 h' },
-  policia:     { icono: '👮', texto: 'CAI / Policía' },
-  violeta:     { icono: '💜', texto: 'Punto Violeta (apoyo a mujeres)' },
-  inseguro:    { icono: '⚠️', texto: 'Zona insegura reportada' },
+  luz:      { icono: 'lightbulb',       color: '#d97706', texto: 'Zona iluminada' },
+  comercio: { icono: 'store',           color: '#2563eb', texto: 'Comercio abierto 24 h' },
+  policia:  { icono: 'shield',          color: '#0f766e', texto: 'CAI / Policía' },
+  violeta:  { icono: 'heart-handshake', color: '#7c3aed', texto: 'Punto Violeta (apoyo a mujeres)' },
+  inseguro: { icono: 'triangle-alert',  color: '#dc2626', texto: 'Zona insegura reportada' },
 };
+
+// HTML del círculo de color con el ícono (se usa en el mapa, la leyenda y las rutas)
+function htmlMarcador(icono, color) {
+  return `<span class="marcador" style="background:${color}"><img src="img/iconos/${icono}.svg" alt=""></span>`;
+}
 
 // Un punto cuenta si está a menos de esta distancia de la ruta
 const RADIO_METROS = 60;
