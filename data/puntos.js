@@ -1,33 +1,35 @@
-// Puntos DE EJEMPLO en el centro de Concepción (Chile).
-// No son datos oficiales: sirven para demostrar el cálculo de seguridad.
-// Tipos: luz, comercio, carabineros, violeta (punto de apoyo), inseguro.
+// Puntos DE EJEMPLO en Fusagasugá (Cundinamarca, Colombia).
+// No son datos oficiales: están puestos para que el demo
+// "Fusagasugá" de OpenStreetMap (4.34495, -74.36742) → Universidad de Cundinamarca
+// muestre rutas distintas:
+//   - la ruta directa (más corta) pasa por zonas inseguras  → riesgosa
+//   - el desvío largo tiene algo de apoyo                    → media
+//   - el otro desvío tiene policía, comercio y luz           → segura
+// Tipos: luz, comercio, policia, violeta (punto de apoyo), inseguro.
 const PUNTOS = [
-  { tipo: 'carabineros', nombre: 'Retén de Carabineros (ejemplo)', lat: -36.8249, lng: -73.0478 },
-  { tipo: 'carabineros', nombre: 'Patrulla fija Plaza Perú (ejemplo)', lat: -36.8308, lng: -73.0395 },
+  // Inicio y fin (todas las rutas pasan por aquí)
+  { tipo: 'violeta', nombre: 'Punto Violeta (ejemplo)', lat: 4.34490, lng: -74.36735 },
+  { tipo: 'comercio', nombre: 'Droguería 24 h', lat: 4.34500, lng: -74.36750 },
+  { tipo: 'policia', nombre: 'CAI Universidad', lat: 4.33600, lng: -74.37120 },
+  { tipo: 'violeta', nombre: 'Punto Violeta Universidad de Cundinamarca', lat: 4.33590, lng: -74.37130 },
 
-  { tipo: 'violeta', nombre: 'Punto Violeta Plaza Independencia', lat: -36.8270, lng: -73.0503 },
-  { tipo: 'violeta', nombre: 'Punto Violeta Arco UdeC', lat: -36.8297, lng: -73.0372 },
+  // Ruta directa: zonas inseguras
+  { tipo: 'inseguro', nombre: 'Cuadra sin alumbrado', lat: 4.34129, lng: -74.36758 },
+  { tipo: 'inseguro', nombre: 'Lote baldío', lat: 4.34152, lng: -74.36915 },
+  { tipo: 'inseguro', nombre: 'Reportes de acoso', lat: 4.34023, lng: -74.37019 },
 
-  { tipo: 'comercio', nombre: 'Farmacia 24 h', lat: -36.8262, lng: -73.0488 },
-  { tipo: 'comercio', nombre: 'Minimarket 24 h', lat: -36.8285, lng: -73.0445 },
-  { tipo: 'comercio', nombre: 'Servicentro 24 h', lat: -36.8231, lng: -73.0420 },
-  { tipo: 'comercio', nombre: 'Farmacia 24 h', lat: -36.8300, lng: -73.0410 },
+  // Desvío largo: algo de apoyo
+  { tipo: 'policia', nombre: 'CAI barrio (ejemplo)', lat: 4.34243, lng: -74.36997 },
+  { tipo: 'comercio', nombre: 'Tienda 24 h', lat: 4.34282, lng: -74.37106 },
+  { tipo: 'luz', nombre: 'Calle iluminada', lat: 4.34178, lng: -74.37168 },
+  { tipo: 'luz', nombre: 'Calle iluminada', lat: 4.34223, lng: -74.37144 },
+  { tipo: 'violeta', nombre: 'Punto Violeta comunal', lat: 4.34264, lng: -74.37056 },
 
-  { tipo: 'luz', nombre: 'Paseo peatonal iluminado', lat: -36.8275, lng: -73.0515 },
-  { tipo: 'luz', nombre: 'Paseo peatonal iluminado', lat: -36.8278, lng: -73.0490 },
-  { tipo: 'luz', nombre: 'Calle bien iluminada', lat: -36.8281, lng: -73.0470 },
-  { tipo: 'luz', nombre: 'Calle bien iluminada', lat: -36.8284, lng: -73.0455 },
-  { tipo: 'luz', nombre: 'Calle bien iluminada', lat: -36.8288, lng: -73.0432 },
-  { tipo: 'luz', nombre: 'Calle bien iluminada', lat: -36.8292, lng: -73.0415 },
-  { tipo: 'luz', nombre: 'Calle bien iluminada', lat: -36.8296, lng: -73.0395 },
-  { tipo: 'luz', nombre: 'Avenida iluminada', lat: -36.8258, lng: -73.0460 },
-  { tipo: 'luz', nombre: 'Avenida iluminada', lat: -36.8252, lng: -73.0440 },
-  { tipo: 'luz', nombre: 'Avenida iluminada', lat: -36.8246, lng: -73.0418 },
-
-  { tipo: 'inseguro', nombre: 'Pasaje sin iluminación', lat: -36.8318, lng: -73.0460 },
-  { tipo: 'inseguro', nombre: 'Sitio eriazo', lat: -36.8326, lng: -73.0430 },
-  { tipo: 'inseguro', nombre: 'Borde de parque oscuro', lat: -36.8335, lng: -73.0475 },
-  { tipo: 'inseguro', nombre: 'Reportes de acoso', lat: -36.8312, lng: -73.0500 },
-  { tipo: 'inseguro', nombre: 'Calle solitaria de noche', lat: -36.8220, lng: -73.0470 },
-  { tipo: 'inseguro', nombre: 'Paso bajo nivel oscuro', lat: -36.8320, lng: -73.0560 },
+  // Desvío seguro: bien iluminado y con comercio
+  { tipo: 'policia', nombre: 'CAI Avenida (ejemplo)', lat: 4.34015, lng: -74.36704 },
+  { tipo: 'comercio', nombre: 'Supermercado 24 h', lat: 4.33926, lng: -74.36672 },
+  { tipo: 'luz', nombre: 'Avenida iluminada', lat: 4.33994, lng: -74.36732 },
+  { tipo: 'luz', nombre: 'Avenida iluminada', lat: 4.33939, lng: -74.36803 },
+  { tipo: 'comercio', nombre: 'Estación de servicio 24 h', lat: 4.33859, lng: -74.36867 },
+  { tipo: 'luz', nombre: 'Avenida iluminada', lat: 4.33904, lng: -74.37009 },
 ];

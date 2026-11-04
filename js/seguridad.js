@@ -2,13 +2,13 @@
 // Idea: cada punto cercano a la ruta suma (da seguridad) o resta (es riesgoso).
 
 // Cuánto aporta cada tipo de punto
-const PESOS = { luz: 1, comercio: 2, carabineros: 3, violeta: 3, inseguro: -4 };
+const PESOS = { luz: 1, comercio: 2, policia: 3, violeta: 3, inseguro: -4 };
 
 // Cómo se muestra cada tipo en el mapa y la leyenda
 const TIPOS = {
   luz:         { icono: '💡', texto: 'Zona iluminada' },
   comercio:    { icono: '🏪', texto: 'Comercio abierto 24 h' },
-  carabineros: { icono: '👮', texto: 'Carabineros' },
+  policia:     { icono: '👮', texto: 'CAI / Policía' },
   violeta:     { icono: '💜', texto: 'Punto Violeta (apoyo a mujeres)' },
   inseguro:    { icono: '⚠️', texto: 'Zona insegura reportada' },
 };

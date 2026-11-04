@@ -1,6 +1,6 @@
 // Mapa con Leaflet: capas, marcadores y puntos de seguridad.
 
-const CENTRO = [-36.8275, -73.0450]; // Centro de Concepción
+const CENTRO = [4.3405, -74.3693]; // Fusagasugá, cerca de la Universidad de Cundinamarca
 
 const mapa = L.map('mapa').setView(CENTRO, 16);
 

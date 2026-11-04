@@ -16,13 +16,15 @@ Fecha: 2026-11-04.
 - **MVP implementado y en `main`.** Están hechas las funciones 1 a 7 de la sección 3, incluido el modo acompañamiento. Ver `README.md`.
 - Se probó en Chrome headless: devuelve 2 rutas reales a pie, calcula el puntaje y no da errores de JS.
 - Cambios respecto del plan:
-  - Ciudad base: **Concepción**.
+  - Ciudad base: **Fusagasugá (Colombia)**; antes era Concepción. Hay emergencias 123 y 155 (*verificar*), CAI de Policía y código de país 57.
+  - Los datos de ejemplo producen 3 rutas distintas (segura, media y riesgosa) entre el punto "Fusagasugá" de OSM y la Universidad de Cundinamarca. Ver el comentario en `data/puntos.js`.
+  - `js/rutas.js` agrega desvíos por cada lado, porque el servidor a menudo devuelve una sola ruta.
   - Los puntos están en `data/puntos.js` (no `.json`) para que funcione también abriendo el archivo sin servidor.
   - Rutas a pie con el servidor de FOSSGIS (`routing.openstreetmap.de/routed-foot`), porque `router.project-osrm.org` solo calcula rutas en auto.
   - Mapa base OSM oscurecido con CSS, porque CARTO ahora exige API key.
   - Se agregó `js/app.js`, que conecta todo.
 - Se ejecuta en VS Code con la extensión Live Server, recomendada en `.vscode/extensions.json`.
-- Pendiente o mejorable: los datos de ejemplo hacen que ambas rutas del demo salgan "segura" (conviene ajustar los puntos para mostrar contraste); faltan pruebas en un celular real y verificar el SOS por WhatsApp en un teléfono.
+- Pendiente: probar en un celular real y verificar el SOS por WhatsApp en un teléfono.
 
 ## 3. Solución propuesta (MVP)
 
