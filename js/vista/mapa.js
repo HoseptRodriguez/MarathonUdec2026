@@ -4,7 +4,8 @@ const CENTRO = [4.3405, -74.3693]; // Fusagasugá, cerca de la Universidad de Cu
 
 const COLORES_RUTA = { segura: '#22c55e', media: '#eab308', riesgosa: '#ef4444' };
 
-const mapa = L.map('mapa').setView(CENTRO, 16);
+// preferCanvas: dibuja los puntos pequeños en un lienzo, para que el mapa sea ágil con cientos de puntos
+const mapa = L.map('mapa', { preferCanvas: true }).setView(CENTRO, 16);
 
 // Mapa base de OpenStreetMap, entregado por el servidor de Aura (se oscurece con CSS para uso nocturno)
 L.tileLayer('api/teselas/{z}/{x}/{y}', {
@@ -27,9 +28,11 @@ function dibujarPuntos(puntos) {
   capaPuntos.clearLayers();
   puntos.forEach(punto => {
     const tipo = TIPOS[punto.tipo];
-    L.marker([punto.lat, punto.lng], { icon: iconoMapa(tipo.icono, tipo.color) })
-      .bindPopup(`<b>${tipo.texto}</b><br>${punto.nombre}`)
-      .addTo(capaPuntos);
+    // La iluminación es muy abundante: se dibuja como un punto pequeño en vez de un ícono
+    const marca = punto.tipo === 'luz'
+      ? L.circleMarker([punto.lat, punto.lng], { radius: 4, color: tipo.color, fillColor: '#fcd34d', fillOpacity: 0.9, weight: 1 })
+      : L.marker([punto.lat, punto.lng], { icon: iconoMapa(tipo.icono, tipo.color) });
+    marca.bindPopup(`<b>${tipo.texto}</b><br>${punto.nombre}`).addTo(capaPuntos);
   });
 }
 

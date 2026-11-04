@@ -20,7 +20,7 @@ function misReportes() {
   return llamarApi('GET', '/api/reportes/mios');
 }
 
-// Puntos de ejemplo + reportes de todas las usuarias
+// Puntos del demo + puntos de ejemplo de toda la ciudad + reportes de todas las usuarias
 function todosLosPuntos() {
-  return PUNTOS.concat(reportesDelMapa);
+  return PUNTOS.concat(PUNTOS_CIUDAD, reportesDelMapa);
 }
