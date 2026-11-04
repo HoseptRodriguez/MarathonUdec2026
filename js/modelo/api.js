@@ -12,6 +12,15 @@ function guardarToken(token) {
   } catch { /* sin almacenamiento: la sesión dura mientras la página esté abierta */ }
 }
 
+// ¿La página la está entregando el servidor de Aura? (y no Live Server u otro programa)
+async function servidorDeAuraDisponible() {
+  try {
+    return (await llamarApi('GET', '/api/salud')).app === 'aura';
+  } catch {
+    return false;
+  }
+}
+
 // Llama a la API; si el servidor responde con error, lanza ese mensaje
 async function llamarApi(metodo, ruta, cuerpo) {
   let respuesta;

@@ -10,12 +10,14 @@ Documento de traspaso para que otro agente continúe con todo el contexto.
 - La app se llama **Aura**. Es para las mujeres de **Fusagasugá y de toda Colombia**: cada una con **su cuenta y sus reportes**.
 - Arquitectura pedida: **Modelo-Vista-Controlador**.
 - El equipo autorizó hacer commit y push a `main` sin preguntar.
-- **Siguiente tarea pedida por el equipo: los manuales** (usuaria, técnico/instalación).
+- Manuales (usuaria y técnico) y documento de uso de IA en formato IEEE: **hechos** en `docs/`.
+- Pruebas unitarias: `npm test` (39/39 en `pruebas/`).
 
 ## 2. Dónde está y cómo se ejecuta
 - Carpeta local: `C:\Users\KTFUS\MarathonUdec2026` (es la que se abre en VS Code).
 - Repositorio: https://github.com/HoseptRodriguez/MarathonUdec2026, rama `main`.
-- Ejecutar: en la terminal, `npm start` (Node 18+, **sin dependencias**), y luego abrir http://localhost:3000.
+- Ejecutar: en la terminal, `npm start` (Node 18+, **sin dependencias**). Abre el navegador solo; si el puerto 3000 está ocupado, prueba 3001, 3002, etc. **En el PC del usuario, el 3000 lo ocupa otra app de pm2**: por eso falló la primera creación de cuenta.
+- Base de datos: archivos JSON en `servidor/datos/` (usuarias, sesiones, reportes); se crea con la primera cuenta. Ver `docs/MANUAL_TECNICO.md` §4.
 - Variables de entorno opcionales: `PORT` (puerto, por defecto 3000) y `CARPETA_DATOS` (dónde guardar los JSON, por defecto `servidor/datos/`).
 - Ya **no** funciona con doble clic ni con Live Server (si se abre con file://, la pantalla de sesión lo avisa).
 - Con Live Share: el anfitrión corre `npm start` y comparte el puerto 3000 (Share Server).
@@ -50,7 +52,6 @@ API: `POST /api/registro`, `POST /api/sesion`, `DELETE /api/sesion`, `GET|PUT /a
 - `servidor/datos/` está en `.gitignore`: nunca se suben datos de usuarias.
 
 ## 6. Pendientes
-- **Manuales** (siguiente tarea).
 - **Publicar en internet** para que las usuarias reales la usen: requiere hosting con HTTPS (el GPS lo exige) y **disco persistente** para `servidor/datos/` (o migrar a una base de datos). Por ejemplo Render, Railway o un VPS, con `npm start` y `PORT`. Necesita la cuenta del equipo.
 - Correo oficial de la Secretaría/Oficina de la Mujer de Fusagasugá en `data/entidades.js`: no se encontró uno verificado, no hay que inventarlo.
 - Verificar con el equipo las líneas 123 y 155.

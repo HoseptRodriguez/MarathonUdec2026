@@ -4,11 +4,12 @@
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
+const { exec } = require('node:child_process');
 const { ErrorAura } = require('./almacen');
 const usuarias = require('./usuarias');
 const reportes = require('./reportes');
 
-const PUERTO = process.env.PORT || 3000;
+const PUERTO = Number(process.env.PORT) || 3000;
 const RAIZ = path.join(__dirname, '..');
 
 // Carpetas de la app que se pueden descargar (nunca servidor/ ni .git)
@@ -27,6 +28,8 @@ function requiereSesion(usuaria) {
 
 // --- Rutas de la API: "MÉTODO /ruta" → función que devuelve la respuesta ---
 const API = {
+  // Permite al navegador comprobar que le responde Aura (y no otro programa)
+  'GET /api/salud': () => ({ app: 'aura', ok: true }),
   'POST /api/registro': ({ cuerpo }) => {
     const usuaria = usuarias.registrar(cuerpo);
     return { token: usuarias.crearSesion(usuaria.id), usuaria };
@@ -96,10 +99,37 @@ function servirArchivo(respuesta, ruta) {
   fs.createReadStream(archivo).pipe(respuesta);
 }
 
-http.createServer((peticion, respuesta) => {
-  const ruta = new URL(peticion.url, 'http://localhost').pathname;
-  if (ruta.startsWith('/api/')) atenderApi(peticion, respuesta, ruta);
-  else servirArchivo(respuesta, ruta);
-}).listen(PUERTO, () => {
-  console.log(`Aura está lista en http://localhost:${PUERTO}`);
-});
+function crearServidor() {
+  return http.createServer((peticion, respuesta) => {
+    const ruta = new URL(peticion.url, 'http://localhost').pathname;
+    if (ruta.startsWith('/api/')) atenderApi(peticion, respuesta, ruta);
+    else servirArchivo(respuesta, ruta);
+  });
+}
+
+// Abre la app en el navegador (si falla, la dirección queda escrita en la terminal)
+function abrirNavegador(url) {
+  const comando = process.platform === 'win32' ? `start "" "${url}"`
+    : process.platform === 'darwin' ? `open "${url}"` : `xdg-open "${url}"`;
+  exec(comando, () => {});
+}
+
+// Inicia el servidor; si el puerto está ocupado por otro programa, prueba el siguiente
+function iniciar(puerto, intentos = 20) {
+  const servidor = crearServidor();
+  servidor.once('error', error => {
+    if (error.code !== 'EADDRINUSE' || intentos === 0) throw error;
+    console.log(`El puerto ${puerto} está ocupado por otro programa. Probando el ${puerto + 1}…`);
+    iniciar(puerto + 1, intentos - 1);
+  });
+  servidor.listen(puerto, () => {
+    const url = `http://localhost:${puerto}`;
+    console.log(`\n  Aura está lista en ${url}\n  Base de datos: ${require('./almacen').CARPETA}\n`);
+    if (!process.env.NO_ABRIR) abrirNavegador(url);
+  });
+}
+
+// Solo arranca si se ejecuta directamente (npm start), no cuando lo cargan las pruebas
+if (require.main === module) iniciar(PUERTO);
+
+module.exports = { crearServidor };

@@ -31,4 +31,4 @@ function guardar(nombre, datos) {
   fs.renameSync(`${archivo}.tmp`, archivo);
 }
 
-module.exports = { leer, guardar, ErrorAura };
+module.exports = { leer, guardar, ErrorAura, CARPETA };

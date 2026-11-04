@@ -286,9 +286,14 @@ async function iniciarApp() {
 mostrarLeyenda();
 dibujarPuntos(todosLosPuntos());
 
-if (location.protocol === 'file:') {
-  // Abierta con doble clic: sin servidor no hay cuentas ni reportes compartidos
-  mostrarErrorSesion('Abre Aura con el servidor: en la terminal escribe "npm start" y entra a http://localhost:3000');
-} else {
-  recuperarSesion().then(usuaria => (usuaria ? iniciarApp() : mostrarPantallaSesion(true)));
-}
+// Sin el servidor de Aura (doble clic, Live Server u otro programa) no hay cuentas ni reportes
+servidorDeAuraDisponible().then(async disponible => {
+  if (!disponible) {
+    mostrarErrorSesion('Aura no está conectada a su servidor. En la terminal de VS Code escribe "npm start" ' +
+      'y abre la dirección que aparece (por ejemplo http://localhost:3000).');
+    return;
+  }
+  const usuaria = await recuperarSesion();
+  if (usuaria) iniciarApp();
+  else mostrarPantallaSesion(true);
+});

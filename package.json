@@ -4,7 +4,8 @@
   "description": "Aura: ruta nocturna segura para mujeres en Colombia",
   "private": true,
   "scripts": {
-    "start": "node servidor/servidor.js"
+    "start": "node servidor/servidor.js",
+    "test": "node --test"
   },
   "engines": {
     "node": ">=18"

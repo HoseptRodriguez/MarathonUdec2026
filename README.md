@@ -34,11 +34,18 @@ Requisito: [Node.js](https://nodejs.org) 18 o superior. No hay que instalar paqu
 
 1. Abrir la carpeta `MarathonUdec2026` en VS Code.
 2. Abrir la terminal (**Terminal → New Terminal**) y escribir `npm start`.
-3. Entrar a **http://localhost:3000** en el navegador.
+3. Aura se abre sola en el navegador (http://localhost:3000). Si ese puerto está ocupado por otro programa, usa el siguiente libre y la terminal muestra la dirección.
 4. **Crear cuenta** (nombre, correo, contraseña y autorización de datos) o **Entrar**.
 5. El origen se toma solo con el GPS. Escribe el destino en "Hasta" y pulsa **Buscar ruta segura**. También puedes marcar origen o destino tocando el mapa.
 
 Con Live Share, quien comparte la sesión ejecuta `npm start` y comparte el puerto 3000 (**Live Share → Share Server**). Así el resto del equipo puede usar la misma Aura, con las mismas cuentas y reportes.
+
+**Pruebas unitarias:** `npm test` (39 pruebas con `node:test`, sin dependencias).
+
+## Documentación
+- [Manual de usuaria](docs/MANUAL_USUARIA.md)
+- [Manual técnico](docs/MANUAL_TECNICO.md): instalación, arquitectura, base de datos, API, seguridad, pruebas y despliegue.
+- [Uso de IA (formato IEEE)](docs/USO_DE_IA_IEEE.md)
 
 ## Cuentas y reportes
 - Cada mujer tiene su **cuenta**. La contraseña se guarda cifrada (scrypt) y la sesión dura 30 días en el dispositivo.
