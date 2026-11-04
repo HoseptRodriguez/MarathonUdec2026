@@ -8,12 +8,12 @@
 
 ## 1. Entrar a Aura
 
-1. Abre en tu navegador la dirección de Aura que te compartieron (por ejemplo `http://localhost:3000`).
+1. Abre en tu navegador o celular **https://aura-mujeres.vercel.app**.
 2. La primera vez, toca **Crear cuenta** y escribe:
    - tu **nombre**,
    - tu **correo**,
    - una **contraseña** de mínimo 8 caracteres.
-3. Marca la casilla de **autorización de tratamiento de datos personales** (Ley 1581 de 2012). Tus reportes se muestran a otras usuarias **sin tu nombre**.
+3. Marca la casilla de **autorización de tratamiento de datos personales**, según la Ley 1581 de 2012 (Congreso de la República de Colombia, 2012). Tus reportes se muestran a otras usuarias **sin tu nombre**.
 4. Toca **Crear cuenta**.
 
 Las siguientes veces toca **Entrar** con tu correo y contraseña. Aura recuerda tu sesión en ese celular durante 30 días.
@@ -116,3 +116,17 @@ Toca el botón rojo **SOS**. Desde ahí puedes:
 **Aura no encuentra mi ubicación.** Revisa que el navegador tenga permiso de ubicación y que el GPS del celular esté encendido. También puedes escribir desde dónde sales.
 
 **Olvidé mi contraseña.** Por ahora no hay recuperación automática: escribe a quien administra Aura.
+
+**¿Puedo instalar Aura en mi celular?** Sí. En el navegador del celular abre el menú y elige **Agregar a la pantalla de inicio**. Aparecerá el ícono de la mariposa.
+
+## Nota sobre el uso de inteligencia artificial
+
+Aura y este manual se elaboraron con la asistencia de Claude Code (Anthropic, 2026), a partir de las instrucciones del equipo, que revisó y probó los resultados. Los mapas usan datos de OpenStreetMap (OpenStreetMap contributors, s. f.).
+
+## Referencias
+
+Anthropic. (2026). *Claude Code* (Modelo Claude Opus 5.5) [Asistente de programación con inteligencia artificial]. https://www.anthropic.com/claude-code
+
+Congreso de la República de Colombia. (2012, 17 de octubre). *Ley Estatutaria 1581 de 2012, por la cual se dictan disposiciones generales para la protección de datos personales*. Función Pública. https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=49981
+
+OpenStreetMap contributors. (s. f.). *Copyright and license*. OpenStreetMap. https://www.openstreetmap.org/copyright

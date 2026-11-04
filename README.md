@@ -2,6 +2,10 @@
 
 Maratón IA UdeC 2026 · Problemática: **ruta nocturna segura para mujeres en el espacio público**.
 
+**Usar Aura:** https://aura-mujeres.vercel.app
+
+Equipo: Natalia Velasquez, Isabela Lombana y Hosept Rodriguez.
+
 ## El problema
 En Fusagasugá (Cundinamarca), como en muchas ciudades, de noche muchas mujeres eligen su camino a pie con miedo y sin información: no saben qué calles están iluminadas, dónde hay comercio abierto o un CAI de Policía, ni qué lugares han tenido reportes de acoso. Las apps de mapas sugieren la ruta **más corta**, no la **más segura**.
 

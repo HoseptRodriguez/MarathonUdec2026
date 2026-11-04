@@ -1,7 +1,9 @@
 # Manual técnico · Aura
 
 Aura es una aplicación web para elegir rutas nocturnas a pie más seguras para mujeres en Colombia, con cuentas de usuaria, reportes compartidos y SOS.
-Repositorio: https://github.com/HoseptRodriguez/MarathonUdec2026
+
+- **Aplicación publicada:** https://aura-mujeres.vercel.app
+- **Repositorio:** https://github.com/HoseptRodriguez/MarathonUdec2026
 
 ---
 
@@ -14,7 +16,7 @@ Repositorio: https://github.com/HoseptRodriguez/MarathonUdec2026
 | Internet | Necesario: mapa, rutas, búsqueda de direcciones y librerías (CDN) |
 
 **No hay dependencias npm.** El servidor usa solo módulos de Node (`http`, `fs`, `crypto`).
-Librerías del navegador cargadas por CDN: Leaflet 1.9.4 (unpkg) y SheetJS 0.18.5 (cdnjs).
+Librerías del navegador cargadas por CDN: Leaflet 1.9.4 (Agafonkin, 2023) y SheetJS 0.18.5 (SheetJS LLC, s. f.).
 
 ---
 
@@ -99,7 +101,16 @@ En el navegador se usan scripts globales sin módulos ES. El orden de los `<scri
 
 ## 4. Base de datos
 
-Aura guarda los datos en **archivos JSON** dentro de `servidor/datos/` (o en la ruta de `CARPETA_DATOS`). Es una base documental simple, sin instalación, adecuada para el prototipo. Los archivos se crean solos con la primera cuenta.
+`servidor/almacen.js` tiene dos modos, con las mismas funciones (`todos`, `guardarRegistro` y `borrarRegistro`):
+
+| Dónde corre | Base de datos | Cómo se activa |
+|---|---|---|
+| Internet (Vercel) | **Upstash Redis** `aura-db`, plan gratuito, región iad1, sin *eviction* ni *auto upgrade* (Upstash, s. f.) | Existen `KV_REST_API_URL` y `KV_REST_API_TOKEN` |
+| Computador local | Archivos JSON en `servidor/datos/` | Sin esas variables |
+
+En Redis cada colección es un hash (`aura:usuarias`, `aura:sesiones`, `aura:reportes`) cuyo campo es el `id` y cuyo valor es el registro en JSON. Las claves de Upstash están en las variables de entorno del proyecto en Vercel y en `.env.local`, que nunca se sube a GitHub.
+
+En el modo local, los archivos JSON se crean solos con la primera cuenta, como un objeto `{ id: registro }`:
 
 | Archivo | Contenido |
 |---|---|
@@ -224,12 +235,23 @@ Resultado al 2026-11-04: **39 pruebas, 39 aprobadas**.
 
 ## 10. Publicación en internet
 
-Para que las mujeres de Fusagasugá y de Colombia usen Aura:
+Aura está publicada en **https://aura-mujeres.vercel.app** (proyecto `aura-mujeres` en Vercel, con HTTPS).
 
-1. Un servicio con Node.js y **HTTPS**, por ejemplo Render, Railway o un VPS con Nginx y Let's Encrypt.
-2. Comando de inicio `npm start` y variable `NO_ABRIR=1`. El puerto lo entrega el servicio en `PORT`.
-3. **Disco persistente** montado en `CARPETA_DATOS`: sin él, los datos se pierden al reiniciar. La alternativa es migrar a una base de datos administrada.
-4. Copias de respaldo periódicas de `CARPETA_DATOS`.
+| Archivo | Función en la publicación |
+|---|---|
+| `vercel.json` | Ejecuta `servidor/construir.js`, publica la carpeta `publico/` y envía `/api/*` a `api/aura.js` |
+| `servidor/construir.js` | Copia a `publico/` solo la app (index.html, manifest, css, js, img, data) |
+| `api/aura.js` | Función de Vercel que atiende la API con el mismo código del servidor local |
+| `.vercelignore` | No sube datos locales, pruebas ni el HANDOFF |
+
+Para publicar una nueva versión, desde la carpeta del proyecto:
+
+```bash
+npm test
+vercel deploy --prod
+```
+
+Para respaldar la base de datos, usa el panel de Upstash en Vercel (Storage → aura-db).
 
 ---
 
@@ -240,6 +262,7 @@ Para que las mujeres de Fusagasugá y de Colombia usen Aura:
 | "Aura no está conectada a su servidor" | Se abrió con doble clic, con Live Server o en el puerto de otro programa | Ejecutar `npm start` y abrir la dirección que muestra la terminal |
 | La terminal dice "El puerto 3000 está ocupado…" | Otro programa usa el puerto | Normal: usar la dirección nueva (3001, …) |
 | No se pudo crear la cuenta | Faltan datos o la autorización, o el correo ya existe | Leer el mensaje en rojo de la pantalla |
+| "La base de datos de Aura no está configurada" (en Vercel) | Faltan las variables de Upstash | Revisar Storage → aura-db conectada a aura-mujeres y volver a publicar |
 | "Usar mi ubicación" no funciona | El sitio no es `localhost` ni HTTPS, o no se dio el permiso | Publicar con HTTPS y aceptar el permiso del navegador |
 | Las rutas salen punteadas ("aproximada") | No hay conexión con el servidor de rutas | Revisar internet; es un respaldo automático |
 | El Excel no se descarga | No cargó SheetJS (sin internet) o no hay reportes | Revisar la conexión; hacer al menos un reporte |
@@ -250,6 +273,31 @@ Para que las mujeres de Fusagasugá y de Colombia usen Aura:
 
 - Los puntos de Fusagasugá son **de ejemplo**; falta integrar datos reales de luminarias, CAI y comercio.
 - No hay recuperación de contraseña porque requiere envío de correos.
-- La base de datos en archivos JSON no está pensada para miles de usuarias simultáneas.
-- Los servicios públicos de OpenStreetMap (teselas, Nominatim y FOSSGIS) tienen políticas de uso justo. Con mucho tráfico se necesita un servidor propio o un proveedor.
+- El plan gratuito de Upstash tiene límites de comandos y de tamaño. Con muchas usuarias habrá que subir de plan.
+- Los servicios públicos de OpenStreetMap (teselas, Nominatim y FOSSGIS) tienen políticas de uso justo (OpenStreetMap Foundation, s. f.). Con mucho tráfico se necesita un servidor propio o un proveedor.
 - Falta el correo oficial de la Secretaría de la Mujer de Fusagasugá en `data/entidades.js`.
+- Falta publicar la política de tratamiento de datos que exige la Ley 1581 de 2012 (Congreso de la República de Colombia, 2012).
+
+## Nota sobre el uso de inteligencia artificial
+
+El código y este manual se elaboraron con la asistencia de Claude Code (Anthropic, 2026), a partir de las instrucciones del equipo, que revisó y probó los resultados.
+
+## Referencias
+
+Agafonkin, V. (2023). *Leaflet* (Versión 1.9.4) [Software]. https://leafletjs.com/
+
+Anthropic. (2026). *Claude Code* (Modelo Claude Opus 5.5) [Asistente de programación con inteligencia artificial]. https://www.anthropic.com/claude-code
+
+Congreso de la República de Colombia. (2012, 17 de octubre). *Ley Estatutaria 1581 de 2012, por la cual se dictan disposiciones generales para la protección de datos personales*. Función Pública. https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=49981
+
+Lucide Contributors. (s. f.). *Lucide* (Versión 0.460.0) [Software]. https://lucide.dev/
+
+OpenJS Foundation. (s. f.). *Test runner*. Documentación de Node.js. https://nodejs.org/api/test.html
+
+OpenStreetMap Foundation. (s. f.). *Nominatim usage policy*. https://operations.osmfoundation.org/policies/nominatim/
+
+Project OSRM. (s. f.). *Open Source Routing Machine*. https://project-osrm.org/
+
+SheetJS LLC. (s. f.). *SheetJS Community Edition* (Versión 0.18.5) [Software]. https://docs.sheetjs.com/
+
+Upstash. (s. f.). *Upstash Redis*. https://upstash.com/docs/redis/overall/getstarted

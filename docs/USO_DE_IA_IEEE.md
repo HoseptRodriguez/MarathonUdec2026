@@ -1,12 +1,12 @@
 # Aura: rutas nocturnas seguras para mujeres en Colombia desarrolladas con asistencia de inteligencia artificial
 
-**Autores:** [Nombres de las integrantes y los integrantes del equipo], Maratón de IA UdeC 2026, Fusagasugá, Colombia.
+**Autores:** Natalia Velasquez, Isabela Lombana y Hosept Rodriguez. Maratón de IA UdeC 2026, Fusagasugá, Colombia.
 
 ---
 
-***Resumen*—** Este documento describe el desarrollo de Aura, una aplicación web que recomienda rutas peatonales nocturnas más seguras para mujeres. Aura permite reportar zonas inseguras, enviar esos reportes a la Secretaría de la Mujer del municipio y pedir ayuda mediante un botón SOS. Se declara de forma explícita el uso de inteligencia artificial (IA) generativa: el código, las pruebas y la documentación fueron producidos con el asistente de programación Claude Code [1] a partir de instrucciones del equipo, que definió el problema, los requisitos y las decisiones, y revisó los resultados. Se detallan la metodología, la división de responsabilidades entre el equipo y la IA, los mecanismos de verificación (39 pruebas automatizadas y pruebas de extremo a extremo en navegador) y las limitaciones éticas y técnicas.
+***Resumen—*** Este documento describe el desarrollo de Aura, una aplicación web que recomienda rutas peatonales nocturnas más seguras para mujeres. Aura permite reportar zonas inseguras, enviar esos reportes a la Secretaría de la Mujer del municipio y pedir ayuda mediante un botón SOS. Se declara de forma explícita el uso de inteligencia artificial (IA) generativa: el código, las pruebas y la documentación fueron producidos con el asistente de programación Claude Code [1] a partir de instrucciones del equipo, que definió el problema, los requisitos y las decisiones, y revisó los resultados. Se detallan la metodología, la división de responsabilidades entre el equipo y la IA, los mecanismos de verificación (39 pruebas automatizadas y pruebas de extremo a extremo en navegador) y las limitaciones éticas y técnicas.
 
-***Términos clave*—** inteligencia artificial generativa, seguridad urbana, violencia de género, sistemas de información geográfica, aplicaciones web, desarrollo asistido por IA.
+***Términos clave—*** inteligencia artificial generativa, seguridad urbana, violencia de género, sistemas de información geográfica, aplicaciones web, desarrollo asistido por IA.
 
 ---
 

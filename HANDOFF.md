@@ -14,6 +14,8 @@ Documento de traspaso para que otro agente continúe con todo el contexto.
 - Pruebas unitarias: `npm test` (39/39 en `pruebas/`).
 
 ## 2. Dónde está y cómo se ejecuta
+- **Publicada (2026-11-04):** https://aura-mujeres.vercel.app. Es el proyecto Vercel `aura-mujeres` del equipo `hosept-rodriguez`, con la base Upstash Redis `aura-db` (plan gratuito, iad1, eviction=false, autoUpgrade=false). Las variables `KV_REST_API_URL` y `KV_REST_API_TOKEN` están en Vercel y en `.env.local` (ignorado por git). Para publicar: `npm test && vercel deploy --prod`. Se probó en producción el registro, la sesión, el contacto y un reporte; luego se borraron los datos de prueba.
+- Equipo: Natalia Velasquez, Isabela Lombana y Hosept Rodriguez. Manuales en Word (APA 7) en el Escritorio del usuario; se generan con un script de python-docx que no está en el repositorio. Si se piden otra vez, se puede rehacer a partir de `docs/*.md`.
 - Carpeta local: `C:\Users\KTFUS\MarathonUdec2026` (es la que se abre en VS Code).
 - Repositorio: https://github.com/HoseptRodriguez/MarathonUdec2026, rama `main`.
 - Ejecutar: en la terminal, `npm start` (Node 18+, **sin dependencias**). Abre el navegador solo; si el puerto 3000 está ocupado, prueba 3001, 3002, etc. **En el PC del usuario, el 3000 lo ocupa otra app de pm2**: por eso falló la primera creación de cuenta.
@@ -52,7 +54,7 @@ API: `POST /api/registro`, `POST /api/sesion`, `DELETE /api/sesion`, `GET|PUT /a
 - `servidor/datos/` está en `.gitignore`: nunca se suben datos de usuarias.
 
 ## 6. Pendientes
-- **Publicar en internet** para que las usuarias reales la usen: requiere hosting con HTTPS (el GPS lo exige) y **disco persistente** para `servidor/datos/` (o migrar a una base de datos). Por ejemplo Render, Railway o un VPS, con `npm start` y `PORT`. Necesita la cuenta del equipo.
+- Política de tratamiento de datos (Ley 1581): falta saber quién es la persona o entidad responsable.
 - Correo oficial de la Secretaría/Oficina de la Mujer de Fusagasugá en `data/entidades.js`: no se encontró uno verificado, no hay que inventarlo.
 - Verificar con el equipo las líneas 123 y 155.
 - Recuperar contraseña: no implementado (requiere envío de correos).
