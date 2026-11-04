@@ -26,9 +26,7 @@ mapa.on('click', e => {
     empezarDeNuevo();
     fijarOrigen(pos);
   } else {
-    destino = pos;
-    ponerMarcador(pos, 'B');
-    buscarRutas();
+    fijarDestino(pos);
   }
 });
 
@@ -36,6 +34,12 @@ function fijarOrigen(pos) {
   origen = pos;
   ponerMarcador(pos, 'A');
   instruccion('Ahora toca tu <b>destino</b>.');
+}
+
+function fijarDestino(pos) {
+  destino = pos;
+  ponerMarcador(pos, 'B');
+  buscarRutas();
 }
 
 // Pide las rutas, les pone nota de seguridad y las ordena de más a menos segura
@@ -70,6 +74,16 @@ function empezarDeNuevo() {
 // --- Botones del panel ---
 
 $('btnLimpiar').onclick = empezarDeNuevo;
+
+// Demo: Parque Principal (Plaza Mayor) → Universidad de Cundinamarca
+const DEMO_ORIGEN = [4.3439103, -74.3619659];
+const DEMO_DESTINO = [4.3359848, -74.3712360];
+
+$('btnDemo').onclick = () => {
+  empezarDeNuevo();
+  fijarOrigen(DEMO_ORIGEN);
+  fijarDestino(DEMO_DESTINO);
+};
 
 $('btnUbicacion').onclick = async () => {
   instruccion('Obteniendo tu ubicación…');

@@ -31,7 +31,15 @@ El total se divide por los kilómetros de la ruta. Si da 4 o más, la ruta es **
 2. Clic derecho en `index.html` → **Open with Live Server**.
 3. Tocar el mapa para marcar el origen y luego el destino.
 
-**Demo para el jurado:** origen en el punto "Fusagasugá" del mapa (donde está el 💜 al norte) y destino en la Universidad de Cundinamarca. Salen 3 rutas: la más corta es **riesgosa**, un desvío es **medio** y el otro es **seguro**. La más corta no es la más segura.
+**Demo para el jurado:** botón **▶ Ver demo**. Traza las rutas del Parque Principal (Plaza Mayor) a la Universidad de Cundinamarca:
+
+| Ruta | Distancia | Nivel |
+|---|---|---|
+| Por el oeste | 2,0 km · 27 min | 🟢 Segura (recomendada) |
+| Desvío del oeste | 2,4 km · 32 min | 🟡 Media |
+| Por el sureste (la más corta) | 1,9 km · 25 min | 🔴 Riesgosa |
+
+**La ruta más corta no es la más segura.** Después se puede reportar una zona insegura sobre la ruta verde y ver cómo cambia la recomendación.
 
 > También funciona abriendo `index.html` directamente, pero "Usar mi ubicación" necesita `localhost` (Live Server) o HTTPS.
 

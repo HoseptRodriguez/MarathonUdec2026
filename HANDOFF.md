@@ -17,7 +17,8 @@ Fecha: 2026-11-04.
 - Se probó en Chrome headless: devuelve 2 rutas reales a pie, calcula el puntaje y no da errores de JS.
 - Cambios respecto del plan:
   - Ciudad base: **Fusagasugá (Colombia)**; antes era Concepción. Hay emergencias 123 y 155 (*verificar*), CAI de Policía y código de país 57.
-  - Los datos de ejemplo producen 3 rutas distintas (segura, media y riesgosa) entre el punto "Fusagasugá" de OSM y la Universidad de Cundinamarca. Ver el comentario en `data/puntos.js`.
+  - Botón **▶ Ver demo**: Parque Principal real (Plaza Mayor, 4.3439103, -74.3619659) → Universidad de Cundinamarca (4.3359848, -74.3712360). Los datos de ejemplo producen 3 rutas: segura (2,0 km), media (2,4 km) y riesgosa (1,9 km, la más corta). Ver el comentario en `data/puntos.js`.
+  - Probado también en vista de celular (390 px): rutas, ventana SOS y enlace de WhatsApp con el contacto y la ubicación.
   - `js/rutas.js` agrega desvíos por cada lado, porque el servidor a menudo devuelve una sola ruta.
   - Los puntos están en `data/puntos.js` (no `.json`) para que funcione también abriendo el archivo sin servidor.
   - Rutas a pie con el servidor de FOSSGIS (`routing.openstreetmap.de/routed-foot`), porque `router.project-osrm.org` solo calcula rutas en auto.

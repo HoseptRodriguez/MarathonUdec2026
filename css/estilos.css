@@ -118,4 +118,5 @@ dialog::backdrop { background: rgba(0, 0, 0, .6); }
   body { flex-direction: column-reverse; }
   #panel { width: 100%; height: 45vh; }
   #mapa { height: 55vh; flex: none; }
+  #btnSOS { top: 12px; bottom: auto; width: 64px; height: 64px; }
 }

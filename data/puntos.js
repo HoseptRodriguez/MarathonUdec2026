@@ -1,35 +1,32 @@
 // Puntos DE EJEMPLO en Fusagasugá (Cundinamarca, Colombia).
 // No son datos oficiales: están puestos para que el demo
-// "Fusagasugá" de OpenStreetMap (4.34495, -74.36742) → Universidad de Cundinamarca
-// muestre rutas distintas:
-//   - la ruta directa (más corta) pasa por zonas inseguras  → riesgosa
-//   - el desvío largo tiene algo de apoyo                    → media
-//   - el otro desvío tiene policía, comercio y luz           → segura
+// Parque Principal (Plaza Mayor) → Universidad de Cundinamarca muestre rutas distintas:
+//   - la ruta más corta (por el sureste) pasa por zonas inseguras → riesgosa
+//   - la ruta por el oeste tiene policía, comercio y luz          → segura
+//   - el desvío del oeste suma un tramo conflictivo                → media
 // Tipos: luz, comercio, policia, violeta (punto de apoyo), inseguro.
 const PUNTOS = [
   // Inicio y fin (todas las rutas pasan por aquí)
-  { tipo: 'violeta', nombre: 'Punto Violeta (ejemplo)', lat: 4.34490, lng: -74.36735 },
-  { tipo: 'comercio', nombre: 'Droguería 24 h', lat: 4.34500, lng: -74.36750 },
+  { tipo: 'violeta', nombre: 'Punto Violeta Parque Principal', lat: 4.34391, lng: -74.36197 },
+  { tipo: 'comercio', nombre: 'Droguería 24 h', lat: 4.34380, lng: -74.36210 },
   { tipo: 'policia', nombre: 'CAI Universidad', lat: 4.33600, lng: -74.37120 },
   { tipo: 'violeta', nombre: 'Punto Violeta Universidad de Cundinamarca', lat: 4.33590, lng: -74.37130 },
 
-  // Ruta directa: zonas inseguras
-  { tipo: 'inseguro', nombre: 'Cuadra sin alumbrado', lat: 4.34129, lng: -74.36758 },
-  { tipo: 'inseguro', nombre: 'Lote baldío', lat: 4.34152, lng: -74.36915 },
-  { tipo: 'inseguro', nombre: 'Reportes de acoso', lat: 4.34023, lng: -74.37019 },
+  // Ruta por el oeste: bien iluminada y con comercio
+  { tipo: 'policia', nombre: 'CAI Centro (ejemplo)', lat: 4.34130, lng: -74.36508 },
+  { tipo: 'comercio', nombre: 'Supermercado 24 h', lat: 4.34109, lng: -74.36663 },
+  { tipo: 'luz', nombre: 'Calle iluminada', lat: 4.34165, lng: -74.36830 },
+  { tipo: 'comercio', nombre: 'Estación de servicio 24 h', lat: 4.34080, lng: -74.36973 },
+  { tipo: 'luz', nombre: 'Avenida iluminada', lat: 4.33955, lng: -74.37074 },
+  { tipo: 'luz', nombre: 'Avenida iluminada', lat: 4.33761, lng: -74.37201 },
 
-  // Desvío largo: algo de apoyo
-  { tipo: 'policia', nombre: 'CAI barrio (ejemplo)', lat: 4.34243, lng: -74.36997 },
-  { tipo: 'comercio', nombre: 'Tienda 24 h', lat: 4.34282, lng: -74.37106 },
-  { tipo: 'luz', nombre: 'Calle iluminada', lat: 4.34178, lng: -74.37168 },
-  { tipo: 'luz', nombre: 'Calle iluminada', lat: 4.34223, lng: -74.37144 },
-  { tipo: 'violeta', nombre: 'Punto Violeta comunal', lat: 4.34264, lng: -74.37056 },
+  // Desvío del oeste: tramo conflictivo
+  { tipo: 'inseguro', nombre: 'Cuadra sin alumbrado', lat: 4.34269, lng: -74.36891 },
+  { tipo: 'inseguro', nombre: 'Reportes de acoso', lat: 4.34243, lng: -74.36935 },
+  { tipo: 'inseguro', nombre: 'Lote baldío', lat: 4.34249, lng: -74.36997 },
 
-  // Desvío seguro: bien iluminado y con comercio
-  { tipo: 'policia', nombre: 'CAI Avenida (ejemplo)', lat: 4.34015, lng: -74.36704 },
-  { tipo: 'comercio', nombre: 'Supermercado 24 h', lat: 4.33926, lng: -74.36672 },
-  { tipo: 'luz', nombre: 'Avenida iluminada', lat: 4.33994, lng: -74.36732 },
-  { tipo: 'luz', nombre: 'Avenida iluminada', lat: 4.33939, lng: -74.36803 },
-  { tipo: 'comercio', nombre: 'Estación de servicio 24 h', lat: 4.33859, lng: -74.36867 },
-  { tipo: 'luz', nombre: 'Avenida iluminada', lat: 4.33904, lng: -74.37009 },
+  // Ruta más corta (sureste): zonas inseguras
+  { tipo: 'inseguro', nombre: 'Calle solitaria de noche', lat: 4.33970, lng: -74.36309 },
+  { tipo: 'inseguro', nombre: 'Tramo sin alumbrado', lat: 4.33727, lng: -74.36527 },
+  { tipo: 'inseguro', nombre: 'Puente peatonal oscuro', lat: 4.33473, lng: -74.36826 },
 ];
