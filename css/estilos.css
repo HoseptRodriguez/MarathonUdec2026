@@ -55,7 +55,10 @@ button:hover, .boton:hover { background: #3d3560; }
 button.activo { background: var(--violeta); }
 .boton.grande { background: #16a34a; font-weight: bold; }
 
-input, select {
+.fila { display: flex; gap: 8px; align-items: center; }
+.fila input[type="checkbox"] { width: auto; }
+
+input, select, textarea {
   width: 100%;
   margin: 6px 0;
   padding: 10px;

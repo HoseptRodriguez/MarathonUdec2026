@@ -40,6 +40,16 @@ function ponerMarcador(pos, letra) {
     .addTo(capaMarcadores);
 }
 
+// Busca una ciudad, barrio o dirección en Colombia y centra el mapa ahí
+async function buscarLugar(texto) {
+  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=co&accept-language=es&q=${encodeURIComponent(texto)}`;
+  const resultados = await (await fetch(url)).json();
+  if (!resultados.length) return null;
+  const lugar = resultados[0];
+  mapa.setView([+lugar.lat, +lugar.lon], 15);
+  return lugar.display_name;
+}
+
 // Borra rutas y marcadores
 function limpiarMapa() {
   capaRutas.clearLayers();

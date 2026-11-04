@@ -12,9 +12,16 @@ function cargarReportes() {
   }
 }
 
-// Agrega un reporte nuevo y lo guarda
-function guardarReporte(pos, motivo) {
-  const reporte = { tipo: 'inseguro', nombre: 'Reporte: ' + motivo, lat: pos[0], lng: pos[1] };
+// Agrega un reporte nuevo y lo guarda (datos = { motivo, descripcion, municipio, departamento })
+function guardarReporte(pos, datos) {
+  const reporte = {
+    tipo: 'inseguro',
+    nombre: 'Reporte: ' + datos.motivo,
+    lat: pos[0],
+    lng: pos[1],
+    fecha: new Date().toISOString(),
+    ...datos,
+  };
   const lista = cargarReportes();
   lista.push(reporte);
   try {

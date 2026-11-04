@@ -100,12 +100,58 @@ $('btnReportar').onclick = () => {
   instruccion(modoReporte ? 'Toca en el mapa el lugar inseguro.' : 'Toca el mapa para marcar tu <b>origen</b>.');
 };
 
-$('btnGuardarReporte').onclick = () => {
-  guardarReporte(posicionReporte, $('motivoReporte').value);
+$('btnGuardarReporte').onclick = async () => {
   $('dialogoReporte').close();
   $('btnReportar').click(); // salir del modo reporte
+
+  const lugar = await obtenerMunicipio(posicionReporte);
+  const reporte = guardarReporte(posicionReporte, {
+    motivo: $('motivoReporte').value,
+    descripcion: $('descripcionReporte').value.trim(),
+    ...lugar,
+  });
+  $('descripcionReporte').value = '';
+
   dibujarPuntos();
+  mostrarEstadoReportes();
   if (origen && destino) buscarRutas(); // recalcular con el nuevo reporte
+  if ($('enviarSecretaria').checked) abrirReporteSecretaria(reporte);
+};
+
+// --- Secretaría de la Mujer y descarga de reportes ---
+
+function mostrarEstadoReportes() {
+  const total = cargarReportes().length;
+  $('estadoReportes').textContent = total
+    ? `Has hecho ${total} reporte(s). Puedes descargarlos para entregarlos a la Secretaría de la Mujer.`
+    : 'Aún no has hecho reportes.';
+}
+
+$('btnCopiarReporte').onclick = async () => {
+  try {
+    await navigator.clipboard.writeText($('textoSecretaria').value);
+    $('btnCopiarReporte').textContent = '✅ Copiado';
+  } catch {
+    $('textoSecretaria').select(); // si no se puede copiar solo, queda seleccionado
+  }
+};
+$('btnCerrarSecretaria').onclick = () => {
+  $('dialogoSecretaria').close();
+  $('btnCopiarReporte').textContent = '📋 Copiar texto';
+};
+$('btnDescargarCSV').onclick = () => descargarCSV(cargarReportes());
+
+// --- Buscar ciudad o barrio en Colombia ---
+
+$('formBuscar').onsubmit = async e => {
+  e.preventDefault();
+  const texto = $('textoBuscar').value.trim();
+  if (!texto) return;
+  instruccion('Buscando…');
+  const nombre = await buscarLugar(texto).catch(() => null);
+  instruccion(nombre
+    ? `📍 ${nombre.split(',').slice(0, 2).join(',')}. Toca el mapa para marcar tu <b>origen</b>.`
+    : 'No encontramos ese lugar. Prueba con otro nombre.');
 };
 $('btnCancelarReporte').onclick = () => $('dialogoReporte').close();
 
@@ -140,3 +186,4 @@ $('btnGuardarContacto').onclick = () => {
 
 $('leyenda').innerHTML = Object.values(TIPOS).map(t => `<li>${t.icono} ${t.texto}</li>`).join('');
 dibujarPuntos();
+mostrarEstadoReportes();

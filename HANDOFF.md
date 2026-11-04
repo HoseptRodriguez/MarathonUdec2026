@@ -25,7 +25,8 @@ Fecha: 2026-11-04.
   - Mapa base OSM oscurecido con CSS, porque CARTO ahora exige API key.
   - Se agregó `js/app.js`, que conecta todo.
 - Se ejecuta en VS Code con la extensión Live Server, recomendada en `.vscode/extensions.json`.
-- Pendiente: probar en un celular real y verificar el SOS por WhatsApp en un teléfono.
+- App renombrada **Aura**. Se agregaron: reporte a la Secretaría de la Mujer (`js/secretaria.js`, correo + copiar + CSV), buscador de lugares en Colombia (Nominatim `countrycodes=co`) y municipio detectado automáticamente. Probado sin errores.
+- Pendiente: completar el correo oficial en `data/entidades.js` (no se encontró uno verificado de Fusagasugá); probar en un celular físico.
 
 ## 3. Solución propuesta (MVP)
 

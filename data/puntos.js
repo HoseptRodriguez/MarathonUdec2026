@@ -16,7 +16,7 @@ const PUNTOS = [
   { tipo: 'policia', nombre: 'CAI Centro (ejemplo)', lat: 4.34130, lng: -74.36508 },
   { tipo: 'comercio', nombre: 'Supermercado 24 h', lat: 4.34109, lng: -74.36663 },
   { tipo: 'luz', nombre: 'Calle iluminada', lat: 4.34165, lng: -74.36830 },
-  { tipo: 'comercio', nombre: 'Estación de servicio 24 h', lat: 4.34080, lng: -74.36973 },
+  { tipo: 'comercio', nombre: 'Estación de gasolina 24 h', lat: 4.34080, lng: -74.36973 },
   { tipo: 'luz', nombre: 'Avenida iluminada', lat: 4.33955, lng: -74.37074 },
   { tipo: 'luz', nombre: 'Avenida iluminada', lat: 4.33761, lng: -74.37201 },
 

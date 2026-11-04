@@ -3,13 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ruta Nocturna Segura</title>
+  <title>Aura · Ruta nocturna segura</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
   <aside id="panel">
-    <h1>🌙 Ruta Nocturna Segura</h1>
+    <h1>🌙 Aura</h1>
+    <p class="nota">Ruta nocturna segura para mujeres · Colombia</p>
+
+    <form id="formBuscar" class="fila">
+      <input id="textoBuscar" placeholder="Busca tu ciudad o barrio en Colombia">
+      <button>🔍</button>
+    </form>
+
     <p id="instruccion">Toca el mapa para marcar tu <b>origen</b>.</p>
 
     <div class="botones">
@@ -35,11 +42,17 @@
 
     <section class="caja">
       <h2>Contacto de confianza</h2>
-      <label>WhatsApp (con código de país)
+      <label>WhatsApp con indicativo (57 + celular)
         <input id="contacto" type="tel" placeholder="573001234567">
       </label>
       <button id="btnGuardarContacto">Guardar</button>
       <p id="estadoContacto"></p>
+    </section>
+
+    <section class="caja">
+      <h2>Mis reportes</h2>
+      <p id="estadoReportes" class="nota"></p>
+      <button id="btnDescargarCSV">⬇️ Descargar reportes (Excel/CSV)</button>
     </section>
 
     <details class="caja">
@@ -72,19 +85,34 @@
       <option>Calle muy solitaria</option>
       <option>Otro</option>
     </select>
+    <textarea id="descripcionReporte" rows="3" placeholder="Cuenta qué pasó (opcional)"></textarea>
+    <label class="fila"><input id="enviarSecretaria" type="checkbox" checked>
+      Enviar también a la Secretaría de la Mujer de mi municipio</label>
     <div class="botones fila">
       <button id="btnGuardarReporte">Guardar reporte</button>
       <button id="btnCancelarReporte">Cancelar</button>
     </div>
   </dialog>
 
+  <!-- Ventana del reporte para la Secretaría de la Mujer -->
+  <dialog id="dialogoSecretaria">
+    <h2>📨 Reporte para la Secretaría de la Mujer</h2>
+    <p id="entidadSecretaria" class="nota"></p>
+    <textarea id="textoSecretaria" rows="9" readonly></textarea>
+    <a id="linkCorreo" class="boton grande">Enviar por correo</a>
+    <button id="btnCopiarReporte">📋 Copiar texto</button>
+    <button id="btnCerrarSecretaria">Cerrar</button>
+  </dialog>
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="data/puntos.js"></script>
+  <script src="data/entidades.js"></script>
   <script src="js/seguridad.js"></script>
   <script src="js/reportes.js"></script>
   <script src="js/mapa.js"></script>
   <script src="js/rutas.js"></script>
   <script src="js/sos.js"></script>
+  <script src="js/secretaria.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
