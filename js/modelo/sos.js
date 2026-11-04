@@ -22,8 +22,12 @@ function obtenerUbicacion(respaldo) {
   });
 }
 
+// Enlace de WhatsApp que abre el chat del contacto de confianza con un texto listo
+function enlaceWhatsAppContacto(texto) {
+  return `https://wa.me/${cargarContacto()}?text=${encodeURIComponent(texto)}`;
+}
+
 // Enlace de WhatsApp con el mensaje de ayuda y la ubicación
 function enlaceWhatsApp(pos, motivo) {
-  const mensaje = `AURA - ${motivo} Mi ubicación: https://maps.google.com/?q=${pos[0]},${pos[1]}`;
-  return `https://wa.me/${cargarContacto()}?text=${encodeURIComponent(mensaje)}`;
+  return enlaceWhatsAppContacto(`AURA - ${motivo} Mi ubicación: https://maps.google.com/?q=${pos[0]},${pos[1]}`);
 }

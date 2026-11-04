@@ -22,7 +22,8 @@ function textoReporte(r) {
   ].join('\n');
 }
 
-// Todo lo que la vista necesita para mostrar el reporte: { entidad, texto, mailto }
+// Todo lo que la vista necesita para mostrar el reporte:
+// { entidad, texto, mailto, whatsapp, contacto }
 function prepararReporteSecretaria(reporte) {
   const entidad = ENTIDADES[normalizar(reporte.municipio)] || null;
   const texto = textoReporte(reporte);
@@ -32,14 +33,25 @@ function prepararReporteSecretaria(reporte) {
     entidad: entidad && entidad.correo ? entidad : null,
     texto,
     mailto: `mailto:${correo}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(texto)}`,
+    whatsapp: enlaceWhatsAppContacto(texto), // al número de confianza registrado
+    contacto: cargarContacto(),
   };
 }
 
-// Contenido CSV de todos los reportes (se abre en Excel)
-function crearCSV(reportes) {
-  const columnas = ['fecha', 'municipio', 'departamento', 'motivo', 'descripcion', 'lat', 'lng'];
-  const celda = valor => `"${String(valor ?? '').replace(/"/g, '""')}"`;
-  const filas = reportes.map(r => columnas.map(c => celda(r[c])).join(';'));
-  // El BOM (﻿) hace que Excel muestre bien las tildes
-  return '﻿' + [columnas.join(';'), ...filas].join('\n');
+// Filas para el archivo de Excel: una por reporte, con encabezados en español
+function filasExcel(reportes) {
+  return reportes.map(r => {
+    const fecha = r.fecha ? new Date(r.fecha) : null;
+    return {
+      Fecha: fecha ? fecha.toLocaleDateString('es-CO') : '',
+      Hora: fecha ? fecha.toLocaleTimeString('es-CO') : '',
+      Municipio: r.municipio || '',
+      Departamento: r.departamento || '',
+      Situación: r.motivo || r.nombre,
+      Descripción: r.descripcion || '',
+      Latitud: r.lat,
+      Longitud: r.lng,
+      Ubicación: `https://maps.google.com/?q=${r.lat},${r.lng}`,
+    };
+  });
 }

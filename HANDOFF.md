@@ -21,7 +21,7 @@ Documento de traspaso para que otro agente continúe con todo el contexto.
 3. **Opción de pin**: los botones "Origen" y "Destino" eligen qué marca el próximo toque en el mapa.
 4. **Rutas a pie puntuadas**: Segura, Media o Riesgosa según los puntos a menos de 60 m (iluminación, comercio 24 h, CAI/Policía, Punto Violeta, zonas inseguras). El servidor de rutas casi siempre devuelve una sola, así que también se piden desvíos por cada lado.
 5. **Reportar zona insegura**: se guarda en localStorage, se dibuja y vuelve a calcular las rutas.
-6. **Reporte a la Secretaría de la Mujer**: detecta el municipio (geocodificación inversa de Nominatim), arma un texto formal y permite enviarlo por correo (`mailto`) o copiarlo. También descarga todos los reportes en CSV para Excel.
+6. **Reporte a la Secretaría de la Mujer**: detecta el municipio (geocodificación inversa de Nominatim), arma un texto formal y permite enviarlo por WhatsApp al contacto de confianza, por correo (`mailto`) o copiarlo. Descarga todos los reportes en un **.xlsx real** (SheetJS 0.18.5 de cdnjs). El contacto se guarda solo mientras se escribe.
 7. **SOS**: envía la ubicación por WhatsApp al contacto de confianza y llama a la línea 123 (emergencias) o a la 155 (orientación a mujeres víctimas de violencia).
 8. **Acompañamiento**: si no se confirma la llegada en X minutos, se abre el SOS.
 9. **Demo**: el botón "Ver demo" traza rutas del Parque Principal (Plaza Mayor, 4.3439103, -74.3619659) a la Universidad de Cundinamarca (4.3359848, -74.3712360). Salen segura (2,0 km), media (2,4 km) y riesgosa (1,9 km, la más corta).
@@ -29,8 +29,8 @@ Documento de traspaso para que otro agente continúe con todo el contexto.
 
 ## 4. Arquitectura: Modelo-Vista-Controlador
 Pedido explícito del equipo. Se usan scripts globales sin módulos ES, para que funcione con doble clic (file://). El orden en index.html es: Modelo, luego Vista, luego Controlador.
-- **Modelo** (`data/`, `js/modelo/`): seguridad.js (pesos y puntaje, evaluarRutas), rutas.js (FOSSGIS + desvíos), reportes.js (localStorage), lugares.js (Nominatim: buscarLugar(texto, centro), obtenerMunicipio), sos.js (GPS, contacto, enlaceWhatsApp), secretaria.js (prepararReporteSecretaria, crearCSV). **No usa document ni Leaflet** (verificado con grep).
-- **Vista** (`js/vista/`): iconos.js (TIPOS, htmlMarcador), mapa.js (Leaflet: dibujarPuntos, ponerMarcador, dibujarRutas, encuadrar, alTocarMapa), panel.js (instruccion, mostrarListaRutas, ventanas, descargarArchivo).
+- **Modelo** (`data/`, `js/modelo/`): seguridad.js (pesos y puntaje, evaluarRutas), rutas.js (FOSSGIS + desvíos), reportes.js (localStorage), lugares.js (Nominatim: buscarLugar(texto, centro), obtenerMunicipio), sos.js (GPS, contacto, enlaceWhatsApp), secretaria.js (prepararReporteSecretaria, filasExcel). **No usa document ni Leaflet** (verificado con grep).
+- **Vista** (`js/vista/`): iconos.js (TIPOS, htmlMarcador), mapa.js (Leaflet: dibujarPuntos, ponerMarcador, dibujarRutas, encuadrar, alTocarMapa), panel.js (instruccion, mostrarListaRutas, ventanas, descargarExcel).
 - **Controlador** (`js/controlador/app.js`): estado (origen, destino, rutas, modoClic, modoReporte, temporizador) y todos los eventos.
 
 ## 5. Decisiones técnicas
@@ -44,6 +44,7 @@ Pedido explícito del equipo. Se usan scripts globales sin módulos ES, para que
 - Verificar con el equipo las líneas 123 y 155.
 - Probar en un celular físico, en especial el GPS (requiere HTTPS o localhost) y que el SOS abra WhatsApp.
 - Un solo reporte sobre la ruta verde no le cambia el nivel; harían falta 2 o 3. Se podría subir el peso de los reportes.
+- Los reportes viven en el localStorage de **cada navegador y cada origen**: los hechos en file:// no aparecen en Live Server (127.0.0.1:5500) y viceversa, ni en el navegador de otro compañero. Para compartirlos se necesita un backend.
 - Ideas futuras: datos reales (luminarias, CAI), backend para compartir reportes entre usuarias, ponderar por hora.
 
 ## 7. Cómo se probó

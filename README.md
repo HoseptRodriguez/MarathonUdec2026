@@ -13,7 +13,7 @@ Una app web que:
 3. **Permite reportar zonas inseguras**. Los reportes se ven en el mapa y bajan la nota de las rutas que pasan cerca.
 4. **Tiene un botón SOS** que envía la ubicación por WhatsApp a un contacto de confianza y llama con un toque a la línea 123 (emergencias) y a la 155 (orientación a mujeres víctimas de violencia).
 5. **Ofrece un modo acompañamiento**: si no confirmas que llegaste en X minutos, se abre el SOS.
-6. **Envía reportes a la Secretaría de la Mujer**: arma un reporte formal (fecha, hora, municipio, situación, descripción y ubicación) y abre el correo o permite copiarlo. Los correos oficiales por municipio se configuran en `data/entidades.js`. También se pueden descargar todos los reportes en CSV para Excel.
+6. **Envía reportes a la Secretaría de la Mujer**: arma un reporte formal (fecha, hora, municipio, situación, descripción y ubicación) y lo envía por WhatsApp al contacto de confianza registrado, por correo o copiándolo. Los correos oficiales por municipio se configuran en `data/entidades.js`. También se pueden descargar todos los reportes en un archivo de Excel (.xlsx).
 7. **Funciona en toda Colombia**: tiene un buscador de ciudades y barrios, las rutas a pie sirven en cualquier municipio y las líneas 123 y 155 son nacionales. Los puntos de ejemplo solo están en Fusagasugá.
 
 ## Cómo se calcula la seguridad
@@ -59,7 +59,7 @@ js/modelo/rutas.js         MODELO       Rutas a pie (FOSSGIS) + desvíos
 js/modelo/reportes.js      MODELO       Reportes de usuarias (localStorage)
 js/modelo/lugares.js       MODELO       Búsqueda de direcciones y municipio (Nominatim)
 js/modelo/sos.js           MODELO       GPS, contacto de confianza, enlace de WhatsApp
-js/modelo/secretaria.js    MODELO       Texto del reporte, correo y CSV
+js/modelo/secretaria.js    MODELO       Texto del reporte, WhatsApp, correo y filas de Excel
 
 js/vista/iconos.js         VISTA        Íconos y colores de cada tipo de punto
 js/vista/mapa.js           VISTA        Mapa Leaflet: puntos, marcadores y rutas
@@ -72,7 +72,7 @@ Regla: el **modelo** no toca la pantalla (ni DOM ni Leaflet), la **vista** no gu
 
 Imágenes: íconos de [Lucide](https://lucide.dev) (ISC) y foto de portada "Bogotá city and street lights" de AltaGamba (Unsplash, CC0) vía Wikimedia Commons.
 
-Tecnologías: HTML, CSS y JavaScript sin frameworks, más [Leaflet](https://leafletjs.com), OpenStreetMap y el servidor público de rutas a pie de FOSSGIS. No usa claves de API.
+Tecnologías: HTML, CSS y JavaScript sin frameworks, más [Leaflet](https://leafletjs.com), [SheetJS](https://sheetjs.com) (Excel), OpenStreetMap y el servidor público de rutas a pie de FOSSGIS. No usa claves de API.
 
 ## Limitaciones y mejoras futuras
 - Los puntos son **datos de ejemplo**. El siguiente paso es cargar datos reales: luminarias municipales, CAI de Policía, comercio 24 h y Puntos Violeta.

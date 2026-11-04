@@ -169,8 +169,11 @@ $('btnCopiarReporte').onclick = async () => {
   }
 };
 $('btnCerrarSecretaria').onclick = () => $('dialogoSecretaria').close();
-$('btnDescargarCSV').onclick = () =>
-  descargarArchivo('reportes-aura.csv', crearCSV(cargarReportes()), 'text/csv;charset=utf-8');
+$('btnDescargarExcel').onclick = () => {
+  const reportes = cargarReportes();
+  if (!reportes.length) return mostrarEstadoReportes(0);
+  descargarExcel(filasExcel(reportes), 'reportes-aura.xlsx');
+};
 
 // --- SOS y acompañamiento ---
 
@@ -200,11 +203,15 @@ $('btnLlegue').onclick = () => {
   $('btnLlegue').hidden = true;
 };
 
+// El contacto se guarda solo mientras se escribe (y también con el botón)
+function registrarContacto() {
+  const numero = $('contacto').value.replace(/\D/g, '');
+  guardarContacto(numero);
+  $('estadoContacto').textContent = numero ? `Contacto guardado: ${numero}` : '';
+}
 $('contacto').value = cargarContacto();
-$('btnGuardarContacto').onclick = () => {
-  guardarContacto($('contacto').value.replace(/\D/g, ''));
-  $('estadoContacto').textContent = 'Contacto guardado.';
-};
+$('contacto').oninput = registrarContacto;
+$('btnGuardarContacto').onclick = registrarContacto;
 
 // --- Inicio ---
 

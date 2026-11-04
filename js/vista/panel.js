@@ -58,9 +58,13 @@ function mostrarEnlaceSOS(url) {
 }
 
 // Ventana del reporte para la Secretaría de la Mujer
-function mostrarReporteSecretaria({ entidad, texto, mailto }, municipio) {
+function mostrarReporteSecretaria({ entidad, texto, mailto, whatsapp, contacto }, municipio) {
   $('textoSecretaria').value = texto;
   $('linkCorreo').href = mailto;
+  $('linkWhatsAppReporte').href = whatsapp;
+  $('linkWhatsAppReporte').lastChild.textContent = contacto
+    ? ` Enviar por WhatsApp a mi contacto (${contacto})`
+    : ' Enviar por WhatsApp (no has registrado contacto de confianza)';
   $('entidadSecretaria').textContent = entidad
     ? `Se enviará a: ${entidad.nombre} (${entidad.correo})`
     : `No tenemos el correo de la Secretaría de la Mujer de ${municipio}. ` +
@@ -69,10 +73,11 @@ function mostrarReporteSecretaria({ entidad, texto, mailto }, municipio) {
   $('dialogoSecretaria').showModal();
 }
 
-// Hace que el navegador descargue un archivo de texto
-function descargarArchivo(nombre, contenido, tipo) {
-  const enlace = document.createElement('a');
-  enlace.href = URL.createObjectURL(new Blob([contenido], { type: tipo }));
-  enlace.download = nombre;
-  enlace.click();
+// Descarga un archivo de Excel (.xlsx) con las filas dadas (usa SheetJS)
+function descargarExcel(filas, nombreArchivo) {
+  const hoja = XLSX.utils.json_to_sheet(filas);
+  hoja['!cols'] = Object.keys(filas[0]).map(() => ({ wch: 22 })); // ancho de columnas
+  const libro = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(libro, hoja, 'Reportes');
+  XLSX.writeFile(libro, nombreArchivo);
 }

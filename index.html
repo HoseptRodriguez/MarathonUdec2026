@@ -68,7 +68,7 @@
     <section class="caja">
       <h2>Mis reportes</h2>
       <p id="estadoReportes" class="nota"></p>
-      <button id="btnDescargarCSV"><img class="icono" src="img/iconos/download.svg" alt=""> Descargar reportes (Excel/CSV)</button>
+      <button id="btnDescargarExcel"><img class="icono" src="img/iconos/download.svg" alt=""> Descargar reportes en Excel</button>
     </section>
 
     <details class="caja">
@@ -117,12 +117,15 @@
     <h2>Reporte para la Secretaría de la Mujer</h2>
     <p id="entidadSecretaria" class="nota"></p>
     <textarea id="textoSecretaria" rows="9" readonly></textarea>
-    <a id="linkCorreo" class="boton grande"><img class="icono" src="img/iconos/mail.svg" alt=""> Enviar por correo</a>
+    <a id="linkWhatsAppReporte" class="boton grande" target="_blank" rel="noopener"><img class="icono" src="img/iconos/phone.svg" alt=""> Enviar por WhatsApp a mi contacto</a>
+    <a id="linkCorreo" class="boton"><img class="icono" src="img/iconos/mail.svg" alt=""> Enviar por correo</a>
     <button id="btnCopiarReporte"><img class="icono" src="img/iconos/copy.svg" alt=""> Copiar texto</button>
     <button id="btnCerrarSecretaria">Cerrar</button>
   </dialog>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- SheetJS: genera el archivo de Excel (.xlsx) de los reportes -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
   <!-- MODELO: datos y lógica (no toca la pantalla) -->
   <script src="data/puntos.js"></script>
