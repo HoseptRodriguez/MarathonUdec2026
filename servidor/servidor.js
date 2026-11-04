@@ -13,11 +13,12 @@ const PUERTO = Number(process.env.PORT) || 3000;
 const RAIZ = path.join(__dirname, '..');
 
 // Carpetas de la app que se pueden descargar (nunca servidor/ ni .git)
-const PUBLICAS = ['index.html', 'css/', 'js/', 'img/', 'data/'];
+const PUBLICAS = ['index.html', 'manifest.webmanifest', 'css/', 'js/', 'img/', 'data/'];
 
 const TIPOS = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',
   '.jpg': 'image/jpeg', '.png': 'image/png', '.svg': 'image/svg+xml',
+  '.webmanifest': 'application/manifest+json',
 };
 
 // Exige que haya una usuaria con sesión iniciada
@@ -30,16 +31,16 @@ function requiereSesion(usuaria) {
 const API = {
   // Permite al navegador comprobar que le responde Aura (y no otro programa)
   'GET /api/salud': () => ({ app: 'aura', ok: true }),
-  'POST /api/registro': ({ cuerpo }) => {
-    const usuaria = usuarias.registrar(cuerpo);
-    return { token: usuarias.crearSesion(usuaria.id), usuaria };
+  'POST /api/registro': async ({ cuerpo }) => {
+    const usuaria = await usuarias.registrar(cuerpo);
+    return { token: await usuarias.crearSesion(usuaria.id), usuaria };
   },
-  'POST /api/sesion': ({ cuerpo }) => {
-    const usuaria = usuarias.verificar(cuerpo);
-    return { token: usuarias.crearSesion(usuaria.id), usuaria };
+  'POST /api/sesion': async ({ cuerpo }) => {
+    const usuaria = await usuarias.verificar(cuerpo);
+    return { token: await usuarias.crearSesion(usuaria.id), usuaria };
   },
-  'DELETE /api/sesion': ({ token }) => {
-    usuarias.cerrarSesion(token);
+  'DELETE /api/sesion': async ({ token }) => {
+    await usuarias.cerrarSesion(token);
     return { ok: true };
   },
   'GET /api/perfil': ({ usuaria }) => requiereSesion(usuaria),
@@ -51,6 +52,10 @@ const API = {
 
 // Lee el cuerpo JSON de la petición (máximo 10 KB)
 function leerCuerpo(peticion) {
+  // En Vercel el cuerpo ya llega leído en peticion.body
+  if ('body' in peticion) {
+    return typeof peticion.body === 'string' ? JSON.parse(peticion.body || '{}') : (peticion.body || {});
+  }
   return new Promise((resolver, rechazar) => {
     let datos = '';
     peticion.on('data', parte => {
@@ -75,7 +80,7 @@ async function atenderApi(peticion, respuesta, ruta) {
     const token = (peticion.headers.authorization || '').replace('Bearer ', '');
     const resultado = await accion({
       token,
-      usuaria: usuarias.usuariaDeToken(token),
+      usuaria: await usuarias.usuariaDeToken(token),
       cuerpo: ['POST', 'PUT'].includes(peticion.method) ? await leerCuerpo(peticion) : {},
     });
     responderJSON(respuesta, 200, resultado);
@@ -124,7 +129,7 @@ function iniciar(puerto, intentos = 20) {
   });
   servidor.listen(puerto, () => {
     const url = `http://localhost:${puerto}`;
-    console.log(`\n  Aura está lista en ${url}\n  Base de datos: ${require('./almacen').CARPETA}\n`);
+    console.log(`\n  Aura está lista en ${url}\n  Base de datos: ${require('./almacen').DONDE}\n`);
     if (!process.env.NO_ABRIR) abrirNavegador(url);
   });
 }
@@ -132,4 +137,4 @@ function iniciar(puerto, intentos = 20) {
 // Solo arranca si se ejecuta directamente (npm start), no cuando lo cargan las pruebas
 if (require.main === module) iniciar(PUERTO);
 
-module.exports = { crearServidor };
+module.exports = { crearServidor, atenderApi };

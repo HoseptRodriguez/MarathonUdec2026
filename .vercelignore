@@ -1,0 +1,5 @@
+# No subir a Vercel: datos locales, pruebas ni documentos internos
+servidor/datos/
+pruebas/
+publico/
+HANDOFF.md

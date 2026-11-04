@@ -1,0 +1,7 @@
+{
+  "buildCommand": "node servidor/construir.js",
+  "outputDirectory": "publico",
+  "rewrites": [
+    { "source": "/api/:ruta*", "destination": "/api/aura?ruta=:ruta*" }
+  ]
+}

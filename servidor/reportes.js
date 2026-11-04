@@ -1,12 +1,12 @@
 // MODELO (servidor) · Reportes de zonas inseguras.
 
 const crypto = require('node:crypto');
-const { leer, guardar, ErrorAura } = require('./almacen');
+const { todos, guardarRegistro, ErrorAura } = require('./almacen');
 
 // Texto limpio y con largo máximo
 const texto = (valor, maximo) => String(valor || '').trim().slice(0, maximo);
 
-function crearReporte(usuariaId, datos) {
+async function crearReporte(usuariaId, datos) {
   const lat = Number(datos.lat);
   const lng = Number(datos.lng);
   // Rectángulo aproximado que cubre Colombia
@@ -27,15 +27,13 @@ function crearReporte(usuariaId, datos) {
     municipio: texto(datos.municipio, 100) || 'Municipio no identificado',
     departamento: texto(datos.departamento, 100),
   };
-  const reportes = leer('reportes');
-  reportes.push(reporte);
-  guardar('reportes', reportes);
+  await guardarRegistro('reportes', reporte.id, reporte);
   return sinDuena(reporte);
 }
 
 // Lo que ven todas las usuarias en el mapa: sin quién lo hizo ni la descripción
-function reportesPublicos() {
-  return leer('reportes').map(r => ({
+async function reportesPublicos() {
+  return (await todos('reportes')).map(r => ({
     tipo: 'inseguro',
     nombre: `Reporte: ${r.motivo}`,
     lat: r.lat,
@@ -44,9 +42,12 @@ function reportesPublicos() {
   }));
 }
 
-// Los reportes completos de una usuaria (para su Excel)
-function reportesDe(usuariaId) {
-  return leer('reportes').filter(r => r.usuariaId === usuariaId).map(sinDuena);
+// Los reportes completos de una usuaria (para su Excel), del más antiguo al más reciente
+async function reportesDe(usuariaId) {
+  return (await todos('reportes'))
+    .filter(r => r.usuariaId === usuariaId)
+    .sort((a, b) => a.fecha.localeCompare(b.fecha))
+    .map(sinDuena);
 }
 
 function sinDuena({ usuariaId, ...resto }) {

@@ -1,3 +1,7 @@
 # Datos de usuarias, sesiones y reportes: nunca se suben al repositorio
 servidor/datos/
 node_modules/
+# Carpeta generada para Vercel (servidor/construir.js) y configuración local de Vercel
+publico/
+.vercel/
+.env*

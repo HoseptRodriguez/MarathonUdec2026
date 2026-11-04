@@ -12,26 +12,26 @@ const DATOS = {
   descripcion: 'Dato privado', municipio: 'Fusagasugá', departamento: 'Cundinamarca',
 };
 
-test('crearReporte: guarda el reporte con fecha y sin exponer a su dueña', () => {
-  const r = reportes.crearReporte('ana', DATOS);
+test('crearReporte: guarda el reporte con fecha y sin exponer a su dueña', async () => {
+  const r = await reportes.crearReporte('ana', DATOS);
   assert.equal(r.motivo, 'Acoso o hostigamiento');
   assert.ok(r.id && r.fecha);
   assert.equal(r.usuariaId, undefined);
 });
 
-test('crearReporte: rechaza ubicaciones fuera de Colombia', () => {
-  assert.throws(() => reportes.crearReporte('ana', { ...DATOS, lat: 40.4, lng: -3.7 }), /Colombia/); // Madrid
-  assert.throws(() => reportes.crearReporte('ana', { ...DATOS, lat: 'abc' }), /Colombia/);
+test('crearReporte: rechaza ubicaciones fuera de Colombia', async () => {
+  await assert.rejects(reportes.crearReporte('ana', { ...DATOS, lat: 40.4, lng: -3.7 }), /Colombia/); // Madrid
+  await assert.rejects(reportes.crearReporte('ana', { ...DATOS, lat: 'abc' }), /Colombia/);
 });
 
-test('crearReporte: exige el motivo y recorta textos largos', () => {
-  assert.throws(() => reportes.crearReporte('ana', { ...DATOS, motivo: '' }), /qué pasa/);
-  const r = reportes.crearReporte('ana', { ...DATOS, descripcion: 'x'.repeat(2000) });
+test('crearReporte: exige el motivo y recorta textos largos', async () => {
+  await assert.rejects(reportes.crearReporte('ana', { ...DATOS, motivo: '' }), /qué pasa/);
+  const r = await reportes.crearReporte('ana', { ...DATOS, descripcion: 'x'.repeat(2000) });
   assert.equal(r.descripcion.length, 500);
 });
 
-test('reportesPublicos: todas ven la ubicación, sin dueña ni descripción', () => {
-  const publicos = reportes.reportesPublicos();
+test('reportesPublicos: todas ven la ubicación, sin dueña ni descripción', async () => {
+  const publicos = await reportes.reportesPublicos();
   assert.equal(publicos.length, 2);
   for (const p of publicos) {
     assert.equal(p.tipo, 'inseguro');
@@ -40,9 +40,9 @@ test('reportesPublicos: todas ven la ubicación, sin dueña ni descripción', ()
   }
 });
 
-test('reportesDe: cada usuaria ve solo los suyos', () => {
-  reportes.crearReporte('bea', DATOS);
-  assert.equal(reportes.reportesDe('ana').length, 2);
-  assert.equal(reportes.reportesDe('bea').length, 1);
-  assert.equal(reportes.reportesDe('nadie').length, 0);
+test('reportesDe: cada usuaria ve solo los suyos', async () => {
+  await reportes.crearReporte('bea', DATOS);
+  assert.equal((await reportes.reportesDe('ana')).length, 2);
+  assert.equal((await reportes.reportesDe('bea')).length, 1);
+  assert.equal((await reportes.reportesDe('nadie')).length, 0);
 });
