@@ -94,9 +94,11 @@ const API = {
     if (!texto) throw new ErrorAura('Escribe el lugar que buscas.');
     const lat = Number(consulta.get('lat'));
     const lng = Number(consulta.get('lng'));
+    // limite > 1: varios resultados, solo dentro de la zona (para listar lugares de un tipo, ej. "pharmacy")
+    const limite = Math.min(Math.max(parseInt(consulta.get('limite'), 10) || 1, 1), 40);
     const zona = consulta.has('lat') && Number.isFinite(lat) && Number.isFinite(lng)
-      ? `&viewbox=${lng - 0.3},${lat + 0.3},${lng + 0.3},${lat - 0.3}` : '';
-    const url = `${NOMINATIM}search?format=json&limit=1&countrycodes=co&accept-language=es${zona}&q=${encodeURIComponent(texto)}`;
+      ? `&viewbox=${lng - 0.3},${lat + 0.3},${lng + 0.3},${lat - 0.3}${limite > 1 ? '&bounded=1' : ''}` : '';
+    const url = `${NOMINATIM}search?format=json&limit=${limite}&countrycodes=co&accept-language=es${zona}&q=${encodeURIComponent(texto)}`;
     return (await pedirServicio(url)).json();
   },
   // Municipio y departamento de una ubicación

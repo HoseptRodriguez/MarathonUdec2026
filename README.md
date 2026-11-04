@@ -63,7 +63,7 @@ Con Live Share, quien comparte la sesión ejecuta `npm start` y comparte el puer
 | Ruta | Distancia | Nivel |
 |---|---|---|
 | Por el oeste | 2,0 km · 27 min | Segura (recomendada) |
-| Desvío del oeste | 2,4 km · 32 min | Media |
+| Desvío del oeste | 2,4 km · 32 min | Segura |
 | Por el sureste (la más corta) | 1,9 km · 25 min | Riesgosa |
 
 **La ruta más corta no es la más segura.** Después se puede reportar una zona insegura sobre la ruta verde y ver cómo cambia la recomendación.

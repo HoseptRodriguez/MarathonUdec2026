@@ -1,0 +1,25 @@
+// Lugares REALES de Fusagasugá tomados de OpenStreetMap (© colaboradores de OpenStreetMap, licencia ODbL), 2026-11-04.
+// Policía, CAI, bomberos y alcaldía: "policia". Hospitales y clínicas: "violeta" (punto de apoyo).
+// Droguerías, gasolineras, supermercados, tiendas, bancos, universidades: "comercio". Parques y restaurantes: "luz".
+const LUGARES_REALES = [{"tipo":"policia","nombre":"Policía: Estación de Policía de Fusagasugá","lat":4.34363,"lng":-74.36358},
+  {"tipo":"policia","nombre":"Policía: Cai de Policia la macarena","lat":4.325,"lng":-74.36423},
+  {"tipo":"policia","nombre":"Bomberos","lat":4.34173,"lng":-74.3607},
+  {"tipo":"violeta","nombre":"Hospital: E.S.E Hospital San Rafael de Fusagasugá","lat":4.33397,"lng":-74.37146},
+  {"tipo":"comercio","nombre":"Droguería: Drogueria La Economía","lat":4.34253,"lng":-74.36163},
+  {"tipo":"comercio","nombre":"Estación de gasolina: Terpel","lat":4.3472,"lng":-74.39369},
+  {"tipo":"comercio","nombre":"Estación de gasolina: Petromil","lat":4.34785,"lng":-74.36104},
+  {"tipo":"comercio","nombre":"Supermercado: Maximercado (Plaza de Mercado)","lat":4.34314,"lng":-74.36498},
+  {"tipo":"comercio","nombre":"Supermercado: Ísimo","lat":4.3417,"lng":-74.36114},
+  {"tipo":"comercio","nombre":"Supermercado: Ara","lat":4.34135,"lng":-74.36141},
+  {"tipo":"comercio","nombre":"Universidad: Universidad de Cundinamarca","lat":4.33598,"lng":-74.37124},
+  {"tipo":"comercio","nombre":"Universidad: Universidad Nacional Abierta y a Distancia","lat":4.34745,"lng":-74.3774},
+  {"tipo":"comercio","nombre":"Universidad: INCCA","lat":4.33801,"lng":-74.36445},
+  {"tipo":"comercio","nombre":"Terminal: Terminal de Transporte de Fusagasugá","lat":4.34503,"lng":-74.37814},
+  {"tipo":"comercio","nombre":"Terminal: Paradero Colectivo Fusagasugá-Chinauta","lat":4.34367,"lng":-74.36413},
+  {"tipo":"comercio","nombre":"Plaza de mercado: Plaza de Mercado","lat":4.34209,"lng":-74.3651},
+  {"tipo":"luz","nombre":"Parque: Barras","lat":4.33508,"lng":-74.37025},
+  {"tipo":"luz","nombre":"Parque: Parque Florida Blanca","lat":4.33223,"lng":-74.36411},
+  {"tipo":"luz","nombre":"Parque: Comuna Occidental","lat":4.32709,"lng":-74.36601},
+  {"tipo":"luz","nombre":"Parque: Pueblito Fusagasugeño","lat":4.34582,"lng":-74.37689},
+  {"tipo":"luz","nombre":"Parque: Comuna Sur Oriental","lat":4.32643,"lng":-74.35852},
+  {"tipo":"luz","nombre":"Parque: Comuna Oriental","lat":4.33442,"lng":-74.35945}];

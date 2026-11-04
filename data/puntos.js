@@ -29,4 +29,6 @@ const PUNTOS = [
   { tipo: 'inseguro', nombre: 'Calle solitaria de noche', lat: 4.33970, lng: -74.36309 },
   { tipo: 'inseguro', nombre: 'Tramo sin alumbrado', lat: 4.33727, lng: -74.36527 },
   { tipo: 'inseguro', nombre: 'Puente peatonal oscuro', lat: 4.33473, lng: -74.36826 },
+  { tipo: 'inseguro', nombre: 'Esquina sin alumbrado', lat: 4.33911, lng: -74.36383 },
+  { tipo: 'inseguro', nombre: 'Tramo solitario de noche', lat: 4.33596, lng: -74.36645 },
 ];

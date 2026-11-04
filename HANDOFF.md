@@ -32,7 +32,7 @@ Documento de traspaso para que otro agente continúe con todo el contexto.
 5. **Reporte a la Secretaría de la Mujer**: detecta el municipio y arma un texto formal que se puede enviar por WhatsApp al contacto de confianza, por correo o copiándolo.
 6. **Contacto de confianza** guardado en la cuenta, mientras se escribe (con espera de 600 ms). A un celular de 10 dígitos que empieza por 3 se le agrega el 57.
 7. **SOS** (WhatsApp con la ubicación, líneas 123 y 155) y **acompañamiento** (si no se confirma la llegada, se abre el SOS).
-8. **Demo**: Parque Principal (Plaza Mayor, 4.3439103, -74.3619659) → Universidad de Cundinamarca (4.3359848, -74.3712360). Salen segura (2,0 km), media (2,4 km) y riesgosa (1,9 km, la más corta).
+8. **Demo**: Parque Principal (Plaza Mayor, 4.3439103, -74.3619659) → Universidad de Cundinamarca (4.3359848, -74.3712360). Salen segura (2,0 km), segura (2,4 km) y riesgosa (1,9 km, la más corta).
 9. Sin emojis: íconos **Lucide** (ISC) en `img/iconos/` y foto CC0 de Wikimedia Commons en `img/portada.jpg`.
 
 ## 4. Arquitectura: Modelo-Vista-Controlador
@@ -72,3 +72,8 @@ API: `POST /api/registro`, `POST /api/sesion`, `DELETE /api/sesion`, `GET|PUT /a
   - `servidor/*` y `/css/../servidor/...` devuelven 404.
   - La contraseña queda cifrada.
 - Navegador (Chrome headless + DevTools Protocol, GPS simulado): registro de Ana, contacto, reporte, WhatsApp con el número, Excel con el reporte, cierre de sesión, registro de Bea (ve 1 reporte en el mapa y 0 propios) y recarga con la sesión mantenida. Sin errores de JS.
+
+## 8. Datos del mapa (2026-11-04)
+- `data/puntos.js`: puntos del demo (Parque Principal → Universidad de Cundinamarca).
+- `data/lugares-reales.js`: 22 lugares **reales** de OpenStreetMap (Policía, CAI La Macarena, hospital, droguerías, gasolineras, supermercados, bancos, parques), obtenidos con Nominatim vía `/api/lugares?limite=40` (Overpass no respondía).
+- `data/puntos-ciudad.js`: 923 puntos **de ejemplo** en malla de ~130 m, sin tocar las rutas del demo.
