@@ -8,10 +8,47 @@
   <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
+  <!-- Pantalla de inicio de sesión y registro -->
+  <section id="pantallaSesion">
+    <div class="tarjeta-sesion">
+      <header class="portada">
+        <h1><img class="icono" src="img/iconos/moon.svg" alt=""> Aura</h1>
+        <p>Ruta nocturna segura para mujeres · Fusagasugá y toda Colombia</p>
+      </header>
+
+      <div class="fila">
+        <button id="pestanaEntrar" class="activo" type="button">Entrar</button>
+        <button id="pestanaCrear" type="button">Crear cuenta</button>
+      </div>
+
+      <form id="formEntrar">
+        <label>Correo <input id="entrarCorreo" type="email" autocomplete="email" required></label>
+        <label>Contraseña <input id="entrarContrasena" type="password" autocomplete="current-password" required></label>
+        <button class="principal">Entrar</button>
+      </form>
+
+      <form id="formCrear" hidden>
+        <label>Nombre <input id="crearNombre" autocomplete="given-name" required></label>
+        <label>Correo <input id="crearCorreo" type="email" autocomplete="email" required></label>
+        <label>Contraseña (mínimo 8 caracteres)
+          <input id="crearContrasena" type="password" minlength="8" autocomplete="new-password" required></label>
+        <label class="fila"><input id="crearAutoriza" type="checkbox" required>
+          Autorizo el tratamiento de mis datos personales según la Ley 1581 de 2012. Mis reportes se muestran en el mapa sin mi nombre.</label>
+        <button class="principal">Crear cuenta</button>
+      </form>
+
+      <p id="errorSesion" class="error"></p>
+    </div>
+  </section>
+
   <aside id="panel">
     <header class="portada">
       <h1><img class="icono" src="img/iconos/moon.svg" alt=""> Aura</h1>
       <p>Ruta nocturna segura para mujeres · Colombia</p>
+      <div class="fila">
+        <b id="saludo"></b>
+        <button id="btnSalir" type="button" class="pequeno">Cerrar sesión</button>
+      </div>
     </header>
 
     <!-- Origen y destino: se escriben o se marcan en el mapa -->
@@ -58,7 +95,7 @@
 
     <section class="caja">
       <h2>Contacto de confianza</h2>
-      <label>WhatsApp con indicativo (57 + celular)
+      <label>WhatsApp con indicativo (57 + celular). Se guarda en tu cuenta.
         <input id="contacto" type="tel" placeholder="573001234567">
       </label>
       <button id="btnGuardarContacto">Guardar</button>
@@ -130,6 +167,8 @@
   <!-- MODELO: datos y lógica (no toca la pantalla) -->
   <script src="data/puntos.js"></script>
   <script src="data/entidades.js"></script>
+  <script src="js/modelo/api.js"></script>
+  <script src="js/modelo/cuenta.js"></script>
   <script src="js/modelo/seguridad.js"></script>
   <script src="js/modelo/rutas.js"></script>
   <script src="js/modelo/reportes.js"></script>
@@ -141,6 +180,7 @@
   <script src="js/vista/iconos.js"></script>
   <script src="js/vista/mapa.js"></script>
   <script src="js/vista/panel.js"></script>
+  <script src="js/vista/sesion.js"></script>
 
   <!-- CONTROLADOR: estado y eventos; conecta modelo y vista -->
   <script src="js/controlador/app.js"></script>

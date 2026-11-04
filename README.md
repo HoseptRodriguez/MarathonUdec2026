@@ -30,9 +30,22 @@ En `js/seguridad.js`, cada punto a menos de **60 m** de la ruta suma su peso:
 El total se divide por los kilómetros de la ruta. Si da 4 o más, la ruta es **segura**; entre 1 y 4, **media**; menos de 1, **riesgosa**.
 
 ## Cómo ejecutarlo (VS Code)
-1. Abrir la carpeta en VS Code e instalar la extensión recomendada **Live Server** (`ritwickdey.LiveServer`).
-2. Clic derecho en `index.html` → **Open with Live Server**.
-3. El origen se toma solo con el GPS. Escribe el destino en "Hasta" y pulsa **Buscar ruta segura**. También puedes marcar origen o destino tocando el mapa.
+Requisito: [Node.js](https://nodejs.org) 18 o superior. No hay que instalar paquetes.
+
+1. Abrir la carpeta `MarathonUdec2026` en VS Code.
+2. Abrir la terminal (**Terminal → New Terminal**) y escribir `npm start`.
+3. Entrar a **http://localhost:3000** en el navegador.
+4. **Crear cuenta** (nombre, correo, contraseña y autorización de datos) o **Entrar**.
+5. El origen se toma solo con el GPS. Escribe el destino en "Hasta" y pulsa **Buscar ruta segura**. También puedes marcar origen o destino tocando el mapa.
+
+Con Live Share, quien comparte la sesión ejecuta `npm start` y comparte el puerto 3000 (**Live Share → Share Server**). Así el resto del equipo puede usar la misma Aura, con las mismas cuentas y reportes.
+
+## Cuentas y reportes
+- Cada mujer tiene su **cuenta**. La contraseña se guarda cifrada (scrypt) y la sesión dura 30 días en el dispositivo.
+- Los **reportes se guardan en el servidor**. Todas las usuarias los ven en el mapa **sin nombre y sin descripción**, y cada una descarga en Excel solo **sus propios** reportes.
+- El **contacto de confianza** se guarda en la cuenta. Si se escribe un celular de 10 dígitos, se le agrega el indicativo 57.
+- Para crear la cuenta se pide la autorización de tratamiento de datos (Ley 1581 de 2012).
+- Los datos quedan en `servidor/datos/` (archivos JSON), que no se suben a GitHub.
 
 **Demo para el jurado:** botón **Ver demo**. Traza las rutas del Parque Principal (Plaza Mayor) a la Universidad de Cundinamarca:
 
@@ -44,7 +57,7 @@ El total se divide por los kilómetros de la ruta. Si da 4 o más, la ruta es **
 
 **La ruta más corta no es la más segura.** Después se puede reportar una zona insegura sobre la ruta verde y ver cómo cambia la recomendación.
 
-> También funciona abriendo `index.html` directamente, pero "Usar mi ubicación" necesita `localhost` (Live Server) o HTTPS.
+> Aura ya no funciona abriendo `index.html` con doble clic ni con Live Server: necesita su servidor (`npm start`) para las cuentas y los reportes. El GPS funciona en `localhost` o con HTTPS.
 
 ## Estructura (Modelo-Vista-Controlador)
 ```
@@ -66,6 +79,14 @@ js/vista/mapa.js           VISTA        Mapa Leaflet: puntos, marcadores y rutas
 js/vista/panel.js          VISTA        Panel lateral, tarjetas de rutas y ventanas
 
 js/controlador/app.js      CONTROLADOR  Estado y eventos; conecta modelo y vista
+js/modelo/api.js           MODELO       Llamadas al servidor
+js/modelo/cuenta.js        MODELO       Registro, sesión y contacto de confianza
+js/vista/sesion.js         VISTA        Pantalla de inicio de sesión
+
+servidor/servidor.js       CONTROLADOR  Servidor web y rutas de la API (Node.js, sin dependencias)
+servidor/usuarias.js       MODELO       Cuentas, contraseñas cifradas y sesiones
+servidor/reportes.js       MODELO       Reportes (públicos sin nombre / completos para su dueña)
+servidor/almacen.js        MODELO       Guarda los datos en servidor/datos/*.json
 ```
 
 Regla: el **modelo** no toca la pantalla (ni DOM ni Leaflet), la **vista** no guarda estado ni llama a servidores, y el **controlador** decide qué pasa cuando la usuaria hace algo.

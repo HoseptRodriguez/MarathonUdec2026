@@ -1,14 +1,4 @@
-// MODELO · Ubicación (GPS), contacto de confianza y mensaje de emergencia.
-
-const CLAVE_CONTACTO = 'ruta-segura-contacto';
-
-// Lee y guarda el número del contacto de confianza
-function cargarContacto() {
-  try { return localStorage.getItem(CLAVE_CONTACTO) || ''; } catch { return ''; }
-}
-function guardarContacto(numero) {
-  try { localStorage.setItem(CLAVE_CONTACTO, numero); } catch { /* sin almacenamiento */ }
-}
+// MODELO · Ubicación (GPS) y mensajes de WhatsApp al contacto de confianza (ver cuenta.js).
 
 // Obtiene la ubicación actual del GPS; si no se puede, devuelve la de respaldo
 function obtenerUbicacion(respaldo) {

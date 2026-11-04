@@ -66,6 +66,31 @@ h1 .icono { width: 26px; height: 26px; }
 .mini .marcador { width: 20px; height: 20px; border-width: 1px; }
 .mini .marcador img { width: 12px; height: 12px; }
 button.principal { background: var(--violeta); font-weight: bold; }
+button.pequeno { padding: 6px 10px; font-size: .85rem; margin-left: auto; }
+
+/* Pantalla de inicio de sesión: cubre toda la app */
+#pantallaSesion {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: var(--fondo);
+  overflow-y: auto;
+}
+#pantallaSesion[hidden] { display: none; }
+.tarjeta-sesion {
+  width: min(100%, 420px);
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--panel);
+}
+.tarjeta-sesion .fila > button { flex: 1; }
+.tarjeta-sesion form { margin-top: 12px; }
+.tarjeta-sesion form .principal { width: 100%; margin-top: 8px; }
+.error { color: #fca5a5; min-height: 1.2em; }
 .fila > input { flex: 1; }
 label { display: block; margin-bottom: 6px; }
 h2 { font-size: 1rem; margin: 0 0 8px; }

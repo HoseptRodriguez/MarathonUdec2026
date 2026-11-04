@@ -145,16 +145,23 @@ $('btnGuardarReporte').onclick = async () => {
   $('dialogoReporte').close();
   $('btnReportar').click(); // salir del modo reporte
 
-  const lugar = await obtenerMunicipio(posicionReporte);
-  const reporte = guardarReporte(posicionReporte, {
-    motivo: $('motivoReporte').value,
-    descripcion: $('descripcionReporte').value.trim(),
-    ...lugar,
-  });
+  instruccion('Guardando tu reporte…');
+  let reporte;
+  try {
+    const lugar = await obtenerMunicipio(posicionReporte);
+    reporte = await guardarReporte(posicionReporte, {
+      motivo: $('motivoReporte').value,
+      descripcion: $('descripcionReporte').value.trim(),
+      ...lugar,
+    });
+  } catch (error) {
+    return instruccion(`No se pudo guardar el reporte: ${error.message}`);
+  }
   $('descripcionReporte').value = '';
+  instruccion('Reporte guardado. Ya lo ven todas las usuarias en el mapa.');
 
   dibujarPuntos(todosLosPuntos());
-  mostrarEstadoReportes(cargarReportes().length);
+  actualizarEstadoReportes();
   if (origen && destino) buscarRutas(); // recalcular con el nuevo reporte
   if ($('enviarSecretaria').checked) mostrarReporteSecretaria(prepararReporteSecretaria(reporte), reporte.municipio);
 };
@@ -169,10 +176,16 @@ $('btnCopiarReporte').onclick = async () => {
   }
 };
 $('btnCerrarSecretaria').onclick = () => $('dialogoSecretaria').close();
-$('btnDescargarExcel').onclick = () => {
-  const reportes = cargarReportes();
+// Cuántos reportes ha hecho la usuaria (se pregunta al servidor)
+async function actualizarEstadoReportes() {
+  const reportes = await misReportes().catch(() => []);
+  mostrarEstadoReportes(reportes.length);
+}
+
+$('btnDescargarExcel').onclick = async () => {
+  const reportes = await misReportes().catch(() => []);
   if (!reportes.length) return mostrarEstadoReportes(0);
-  descargarExcel(filasExcel(reportes), 'reportes-aura.xlsx');
+  descargarExcel(filasExcel(reportes), 'mis-reportes-aura.xlsx');
 };
 
 // --- SOS y acompañamiento ---
@@ -203,19 +216,79 @@ $('btnLlegue').onclick = () => {
   $('btnLlegue').hidden = true;
 };
 
-// El contacto se guarda solo mientras se escribe (y también con el botón)
-function registrarContacto() {
+// El contacto se guarda en la cuenta mientras se escribe (y también con el botón)
+let esperaContacto = null;
+async function registrarContacto() {
   const numero = $('contacto').value.replace(/\D/g, '');
-  guardarContacto(numero);
-  $('estadoContacto').textContent = numero ? `Contacto guardado: ${numero}` : '';
+  try {
+    await guardarContacto(numero);
+    $('estadoContacto').textContent = numero ? `Contacto guardado: ${cargarContacto()}` : '';
+  } catch (error) {
+    $('estadoContacto').textContent = `No se pudo guardar: ${error.message}`;
+  }
 }
-$('contacto').value = cargarContacto();
-$('contacto').oninput = registrarContacto;
+$('contacto').oninput = () => {
+  clearTimeout(esperaContacto);
+  esperaContacto = setTimeout(registrarContacto, 600); // espera a que termine de escribir
+};
 $('btnGuardarContacto').onclick = registrarContacto;
+
+// --- Sesión ---
+
+$('pestanaEntrar').onclick = () => mostrarPestana('entrar');
+$('pestanaCrear').onclick = () => mostrarPestana('crear');
+
+$('formEntrar').onsubmit = async e => {
+  e.preventDefault();
+  try {
+    await entrar($('entrarCorreo').value, $('entrarContrasena').value);
+    iniciarApp();
+  } catch (error) {
+    mostrarErrorSesion(error.message);
+  }
+};
+
+$('formCrear').onsubmit = async e => {
+  e.preventDefault();
+  try {
+    await crearCuenta({
+      nombre: $('crearNombre').value,
+      correo: $('crearCorreo').value,
+      contrasena: $('crearContrasena').value,
+      autorizaDatos: $('crearAutoriza').checked,
+    });
+    iniciarApp();
+  } catch (error) {
+    mostrarErrorSesion(error.message);
+  }
+};
+
+$('btnSalir').onclick = async () => {
+  await salir();
+  empezarDeNuevo();
+  mostrarPestana('entrar');
+  mostrarPantallaSesion(true);
+};
+
+// Con la sesión iniciada: carga los reportes de todas y arranca la app
+async function iniciarApp() {
+  mostrarPantallaSesion(false);
+  mostrarSaludo(usuariaActual);
+  mapa.invalidateSize(); // el mapa estaba oculto detrás de la pantalla de sesión
+  await actualizarReportes().catch(() => instruccion('No se pudieron cargar los reportes.'));
+  dibujarPuntos(todosLosPuntos());
+  actualizarEstadoReportes();
+  usarMiUbicacion(); // origen automático
+}
 
 // --- Inicio ---
 
 mostrarLeyenda();
 dibujarPuntos(todosLosPuntos());
-mostrarEstadoReportes(cargarReportes().length);
-usarMiUbicacion(); // origen automático al abrir la app
+
+if (location.protocol === 'file:') {
+  // Abierta con doble clic: sin servidor no hay cuentas ni reportes compartidos
+  mostrarErrorSesion('Abre Aura con el servidor: en la terminal escribe "npm start" y entra a http://localhost:3000');
+} else {
+  recuperarSesion().then(usuaria => (usuaria ? iniciarApp() : mostrarPantallaSesion(true)));
+}

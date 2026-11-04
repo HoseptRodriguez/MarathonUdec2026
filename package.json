@@ -1,0 +1,12 @@
+{
+  "name": "aura",
+  "version": "1.0.0",
+  "description": "Aura: ruta nocturna segura para mujeres en Colombia",
+  "private": true,
+  "scripts": {
+    "start": "node servidor/servidor.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
